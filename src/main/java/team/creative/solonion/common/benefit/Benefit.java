@@ -22,9 +22,9 @@ import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.premade.registry.RegistryObjectConfig;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
-import team.creative.creativecore.common.gui.controls.simple.GuiStateButtonMapped;
-import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
+import team.creative.creativecore.common.gui.control.collection.GuiComboBox;
+import team.creative.creativecore.common.gui.control.simple.GuiStateButton;
+import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
@@ -64,17 +64,17 @@ public abstract class Benefit<T> {
             @Environment(EnvType.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 parent.flow = GuiFlow.STACK_Y;
-                parent.add(new GuiStateButtonMapped<BenefitType>("state", 0, BenefitType.typeMap()) {
+                parent.add(new GuiStateButton<BenefitType>("state", 0, BenefitType.typeMap()) {
                     
                     @Override
                     public void raiseEvent(GuiEvent event) {
                         
-                        GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("elements");
-                        Registry registry = getSelected().registry();
+                        GuiComboBox<ResourceLocation> box = (GuiComboBox<ResourceLocation>) parent.get("elements");
+                        Registry registry = selected().registry();
                         GuiParent subConfig = parent.get("subConfig");
                         subConfig.clear();
-                        getSelected().createControls(subConfig, configParent);
-                        box.setLines(new TextMapBuilder<ResourceLocation>().addComponent(registry.keySet(), value -> {
+                        selected().createControls(subConfig, configParent);
+                        box.set(new TextMapBuilder<ResourceLocation>().addComponent(registry.keySet(), value -> {
                             if (value.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
                                 return Component.literal(value.getPath());
                             return Component.literal(value.toString());
@@ -84,7 +84,7 @@ public abstract class Benefit<T> {
                     }
                     
                 });
-                parent.add(new GuiComboBoxMapped<ResourceLocation>("elements", new TextMapBuilder<ResourceLocation>()).setSearchbar(true));
+                parent.add(new GuiComboBox<ResourceLocation>("elements", new TextMapBuilder<ResourceLocation>()).setSearchbar(true));
                 parent.add(new GuiTextfield("value").setFloatOnly().setDim(20, 6));
                 parent.add(new GuiParent("subConfig"));
             }
@@ -93,28 +93,28 @@ public abstract class Benefit<T> {
             @OnlyIn(Dist.CLIENT)
             @Environment(EnvType.CLIENT)
             public void loadValue(Benefit value, Benefit defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-                GuiStateButtonMapped<BenefitType> state = parent.get("state");
+                GuiStateButton<BenefitType> state = parent.get("state");
                 state.select(BenefitType.getType(value));
                 state.raiseEvent(new GuiControlChangedEvent(state));
                 
-                GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("elements");
+                GuiComboBox<ResourceLocation> box = (GuiComboBox<ResourceLocation>) parent.get("elements");
                 box.select(value.property.location);
                 
                 GuiTextfield text = parent.get("value");
                 text.setText(value.value + "");
                 
                 GuiParent subConfig = parent.get("subConfig");
-                state.getSelected().loadValue(value, subConfig, configParent);
+                state.selected().loadValue(value, subConfig, configParent);
             }
             
             @Override
             @OnlyIn(Dist.CLIENT)
             @Environment(EnvType.CLIENT)
             protected Benefit saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-                GuiStateButtonMapped<BenefitType> state = parent.get("state");
-                GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("elements");
+                GuiStateButton<BenefitType> state = parent.get("state");
+                GuiComboBox<ResourceLocation> box = (GuiComboBox<ResourceLocation>) parent.get("elements");
                 GuiTextfield text = parent.get("value");
-                return state.getSelected().saveValue(box.getSelected(), text.parseDouble(), parent.get("subConfig"), configParent);
+                return state.selected().saveValue(box.selected(), text.parseDouble(), parent.get("subConfig"), configParent);
             }
             
             @Override
