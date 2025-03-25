@@ -29,7 +29,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.premade.registry.RegistryObjectConfig;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.simple.GuiStateButtonMapped;
+import team.creative.creativecore.common.gui.control.simple.GuiStateButton;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.solonion.common.SOLOnion;
 import team.creative.solonion.common.mod.FirstAidManager;
@@ -89,7 +89,7 @@ public class BenefitAttribute extends Benefit<Attribute> {
         @OnlyIn(Dist.CLIENT)
         @Environment(EnvType.CLIENT)
         public void createControls(GuiParent parent, IGuiConfigParent configParent) {
-            parent.add(new GuiStateButtonMapped<Operation>("operation", new TextMapBuilder<Operation>().addComponent(Operation.values(), x -> Component.translatable(
+            parent.add(new GuiStateButton<Operation>("operation", new TextMapBuilder<Operation>().addComponent(Operation.values(), x -> Component.translatable(
                 "config.solonion." + x.getSerializedName()))));
         }
         
@@ -97,7 +97,7 @@ public class BenefitAttribute extends Benefit<Attribute> {
         @OnlyIn(Dist.CLIENT)
         @Environment(EnvType.CLIENT)
         public void loadValue(BenefitAttribute value, GuiParent parent, IGuiConfigParent configParent) {
-            GuiStateButtonMapped<Operation> op = parent.get("operation");
+            GuiStateButton<Operation> op = parent.get("operation");
             op.select(value.operation);
         }
         
@@ -105,8 +105,8 @@ public class BenefitAttribute extends Benefit<Attribute> {
         @OnlyIn(Dist.CLIENT)
         @Environment(EnvType.CLIENT)
         public BenefitAttribute saveValue(ResourceLocation location, double value, GuiParent parent, IGuiConfigParent configParent) {
-            GuiStateButtonMapped<Operation> op = parent.get("operation");
-            return new BenefitAttribute(location, value, op.getSelected());
+            GuiStateButton<Operation> op = parent.get("operation");
+            return new BenefitAttribute(location, value, op.selected());
         }
         
         @Override
