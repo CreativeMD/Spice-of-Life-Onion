@@ -57,6 +57,13 @@ public class SOLOnionEvent {
                 break;
         }
         
+        for (BenefitThreshold threshold : SOLOnion.CONFIG.detriments) {
+            if (threshold.threshold > d)
+                stack.add(threshold.benefit);
+            else
+                break;
+        }
+        
         SOLOnionAPI.getBenefitCapability(player).updateStack(player, stack);
     }
     
