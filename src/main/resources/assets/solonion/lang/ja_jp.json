@@ -1,0 +1,61 @@
+{
+	"command.solonion.no_permissions": "あなたはこのコマンドを他のプレーヤーに適用するのに必要な権限を持っていません！",
+
+	"command.solonion.clear.success": "食品リストをリセットしました!",
+	"command.solonion.diversity_feedback": "食品多様性: %.2f",
+	"command.solonion.sync.success": "食品リストを同期しました!",
+	"command.solonion.origin.invalidated": "全てのオリジンデータをリセットしました!",
+	"command.solonion.origin.cleared": "全てのオリジンデータを削除しました!",
+	"command.solonion.origin.inapplicable": "origin Modがインストールされていませんが、全てのオリジンデータを削除しました",
+
+	"item.solonion.food_book": "フードブック",
+	"item.solonion.lunchbox": "ランチボックス",
+	"item.solonion.container.lunchbox": "ランチボックス",
+    "item.solonion.golden_lunchbox": "ゴールデンランチボックス",
+    "item.solonion.container.golden_lunchbox": "ゴールデンランチボックス",
+	"item.solonion.lunchbag": "ランチバッグ",
+	"item.solonion.container.lunchbag": "ランチバッグ",
+	
+	"item.solonion.container.open": "%s + %s で開ける",
+
+	"key.solonion.open_food_book": "フードブックを開く",
+	"key.solonion.category": "Spice of Life Onion",
+	
+	"gui.solonion.food_book.stats": "概要",
+	"gui.solonion.food_book.stats.current_diversity": "現在の食品多様性",
+	"gui.solonion.food_book.stats.min_warning1": "あと %d 回食べる必要がある",
+	"gui.solonion.food_book.stats.min_warning2": "バフを有効にする",
+	"gui.solonion.food_book.active_benefits_header": "有効なバフ",
+	"gui.solonion.food_book.inactive_benefits_header": "有効でないバフ",
+	"gui.solonion.food_book.benefits.threshold_label": "閾値",
+	"gui.solonion.food_book.benefits.active_tooltip": "食品多様性がこの閾値より大きいので、このバフが有効になっています。",
+	"gui.solonion.food_book.benefits.inactive_tooltip": "食品多様性がこの閾値より大きくなると、このバフが有効になります。",
+	"gui.solonion.food_book.food_queue_label": "食べた食事",
+	"gui.solonion.food_book.food_queue_tooltip": "あなたの食品多様性に寄与する、過去に食べたすべての食事のリスト。",
+
+	"gui.solonion.food_book.fraction": "%1$s/%2$s",
+
+    "gui.solonion.tooltip.disabled": "この食品は食品多様性には貢献しない。",
+	"gui.solonion.tooltip.diversity": "食品多様性",
+	"gui.solonion.tooltip.last_eaten": "最後に食べた食事: %d 食前",
+	"gui.solonion.tooltip.last_eaten_singular": "最後に食べた食事: %d 食前",
+	
+	"gui.solonion.inventory.button": "SOL",
+	"gui.solonion.inventory.tooltip": "SOL Onion Stats\n食品多様性: %s",
+	
+	"config.solonion.att": "属性",
+	"config.solonion.eff": "Mobエフェクト",
+	
+	"config.solonion.add_value": "追加",
+	"config.solonion.add_multiplied_base": "乗算の基本値",
+	"config.solonion.add_multiplied_total": "乗算の合計値",
+	
+	"config.solonion.trackCount.comment": "この値が大きいほど、潜在的な多様性の値が高くなる可能性があるので、上記のカスタム閾値\n閾値を定義する場合は、この点に注意してください。",
+    "config.solonion.minFoodsToActivate.comment": "特典が適用される前に、プレイヤーが最低限食べる必要のある食品の数。",
+    
+    "config.solonion.complexityStandardNutrition.comment": "デフォルトでは、これがパンの満腹度になります。\nあらゆる食品がこれと比較され、それに応じて計算されます。",
+    "config.solonion.complexityStandardSaturation.comment": "デフォルトでは、これがパンの隠し満腹度になります。\nあらゆる食品がこれと比較され、それに応じて計算されます。",
+    "config.solonion.complexityBenefitEffectModifier.comment": "食品にプラスの効果（レベル含む）1つにつき、\nどれだけの多様性が付加されるか。",
+    "config.solonion.complexityNeutralEffectModifier.comment": "食品にプラスでもマイナスでもない効果（レベル含む）1つにつき、\n食品にどれだけの多様性が付加されるか。",
+    "config.solonion.complexityHarmEffectModifier.comment": "食品にマイナス効果（レベル含む）1つにつき、\n食品にどれだけの多様性が付加されるか。"
+}
