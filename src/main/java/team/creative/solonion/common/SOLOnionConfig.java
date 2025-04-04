@@ -60,6 +60,9 @@ public final class SOLOnionConfig implements ICreativeConfig {
         new BenefitThreshold(31, new BenefitAttribute(Attributes.MAX_HEALTH, 6)));
     
     @CreativeConfig
+    public List<BenefitThreshold> detriments = Arrays.asList();
+    
+    @CreativeConfig
     public boolean shouldExcludedCount = true;
     
     @CreativeConfig
@@ -103,6 +106,9 @@ public final class SOLOnionConfig implements ICreativeConfig {
     @Override
     public void configured(Side side) {
         Collections.sort(benefits);
+        
+        Collections.sort(detriments);
+        Collections.reverse(detriments);
         
         if (side.isClient())
             return;
