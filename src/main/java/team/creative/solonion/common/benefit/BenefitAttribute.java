@@ -116,7 +116,10 @@ public class BenefitAttribute extends Benefit<Attribute> {
         
         @Override
         public void addToStack(BenefitAttribute value, Object2DoubleMap<AttributeHolder> stack) {
-            stack.compute(new AttributeHolder(value.property.getHolder(), value.operation), (x, y) -> y != null ? Math.max(y, value.value) : value.value);
+            if (value.operation == Operation.ADD_VALUE)
+                stack.compute(new AttributeHolder(value.property.getHolder(), value.operation), (x, y) -> y != null ? y + value.value : value.value);
+            else
+                stack.compute(new AttributeHolder(value.property.getHolder(), value.operation), (x, y) -> y != null ? Math.max(y, value.value) : value.value);
         }
         
         @Override
@@ -160,6 +163,8 @@ public class BenefitAttribute extends Benefit<Attribute> {
         
         @Override
         public boolean apply(Player player, HashMap<AttributeHolder, AttributeModifier> applied, @Nullable Object2DoubleMap<AttributeHolder> stack) {
+            float oldMax = player.getMaxHealth();
+            
             if (!applied.isEmpty()) {
                 for (Entry<AttributeHolder, AttributeModifier> entry : applied.entrySet())
                     player.getAttribute(entry.getKey().attribute).removeModifier(entry.getValue().id());
@@ -170,10 +175,10 @@ public class BenefitAttribute extends Benefit<Attribute> {
                 for (var entry : stack.object2DoubleEntrySet()) {
                     var location = ResourceLocation.tryBuild(SOLOnion.MODID, entry.getKey().operation.toString().toLowerCase());
                     var att = player.getAttribute(entry.getKey().attribute);
+                    
                     att.removeModifier(location); // make sure modifier does not exist already
                     var modi = new AttributeModifier(location, entry.getDoubleValue(), entry.getKey().operation);
                     if (att != null) {
-                        float oldMax = player.getMaxHealth();
                         
                         att.addPermanentModifier(modi);
                         applied.put(entry.getKey(), modi);
