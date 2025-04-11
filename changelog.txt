@@ -1,3 +1,10 @@
+1.5.0
+Added detriments to food book
+Added trackedFoodDiversityDecay
+Fixed not calculating attribute add operators correctly (always took max instead of adding values together)
+Changed benefit configuration accordingly (highly recommended to reset benefit config)
+Fixed crash when opening config
+
 1.4.9
 Added detriments configuration (empty by default)
 Create ja_jp.json (Thanks to Mohuzato)
