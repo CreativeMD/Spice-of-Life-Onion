@@ -70,7 +70,7 @@ public final class FoodPlayerDataImpl implements FoodPlayerData {
     }
     
     public static double calculateDiversity(LivingEntity entity, ItemStack stack, int index) {
-        return SOLOnion.CONFIG.getDiversity(entity, stack) * (1D - (index / (SOLOnion.CONFIG.trackCount + 1D)));
+        return SOLOnion.CONFIG.getDiversity(entity, stack) * (SOLOnion.CONFIG.trackedFoodDiversityDecay ? (1D - (index / (SOLOnion.CONFIG.trackCount + 1D))) : 1);
     }
     
     private ItemStack[] lastEaten = new ItemStack[SOLOnion.CONFIG.trackCount];

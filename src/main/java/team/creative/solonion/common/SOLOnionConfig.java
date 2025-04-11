@@ -81,6 +81,9 @@ public final class SOLOnionConfig implements ICreativeConfig {
     public double complexityHarmEffectModifier = -0.2;
     
     @CreativeConfig
+    public boolean trackedFoodDiversityDecay = true;
+    
+    @CreativeConfig
     public List<FoodProperty> foodDiversity = Arrays.asList(new FoodProperty(new CreativeIngredientItem(Items.GOLDEN_CARROT), 2),
         new FoodProperty(new CreativeIngredientItem(Items.GOLDEN_APPLE), 2), new FoodProperty(new CreativeIngredientItem(Items.ENCHANTED_GOLDEN_APPLE), 5));
     

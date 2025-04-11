@@ -57,5 +57,6 @@
     "config.solonion.complexityStandardSaturation.comment": "By default this is the saturation value of bread.\nEvery food is compared to it and calculated accordingly.",
     "config.solonion.complexityBenefitEffectModifier.comment": "How much complexity is added per positive effect (including level) to the food.\nThe chance of the effect will be considered.",
     "config.solonion.complexityNeutralEffectModifier.comment": "How much complexity is added per neutral effect (including level) to the food.\nThe chance of the effect will be considered.",
-    "config.solonion.complexityHarmEffectModifier.comment": "How much complexity is added per negative effect (including level) to the food.\nThe chance of the effect will be considered."
+    "config.solonion.complexityHarmEffectModifier.comment": "How much complexity is added per negative effect (including level) to the food.\nThe chance of the effect will be considered.",
+    "config.solonion.trackedFoodDiversityDecay.comment": "The diversity an item contributes decreases when eating other stuff. If disabled the diversity will not drop until the food falls out of the tracked list."
 }
