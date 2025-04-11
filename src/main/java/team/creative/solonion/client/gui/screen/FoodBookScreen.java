@@ -114,6 +114,19 @@ public final class FoodBookScreen extends Screen implements PageFlipButton.Pagea
         
         if (SOLOnion.CONFIG.shouldShowInactiveBenefits)
             addPages("inactive_benefits_header", inactive, inactiveRed);
+        
+        active = new ArrayList<>();
+        inactive = new ArrayList<>();
+        for (BenefitThreshold threshold : SOLOnion.CONFIG.detriments)
+            if (threshold.threshold > foodDiversity)
+                active.add(threshold);
+            else
+                inactive.add(threshold);
+            
+        addPages("active_detriments_header", active, inactiveRed);
+        
+        if (SOLOnion.CONFIG.shouldShowInactiveDetriments)
+            addPages("inactive_detriments_header", inactive, activeGreen);
     }
     
     private void addPages(String headerLocalizationPath, List<BenefitThreshold> benefitInfoList, Color activeColor) {
