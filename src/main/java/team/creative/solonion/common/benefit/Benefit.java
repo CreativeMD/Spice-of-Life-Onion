@@ -68,10 +68,11 @@ public abstract class Benefit<T> {
                     
                     @Override
                     public void raiseEvent(GuiEvent event) {
-                        
                         GuiComboBox<ResourceLocation> box = (GuiComboBox<ResourceLocation>) parent.get("elements");
                         Registry registry = selected().registry();
                         GuiParent subConfig = parent.get("subConfig");
+                        if (subConfig == null)
+                            return;
                         subConfig.clear();
                         selected().createControls(subConfig, configParent);
                         box.set(new TextMapBuilder<ResourceLocation>().addComponent(registry.keySet(), value -> {
