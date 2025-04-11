@@ -96,6 +96,8 @@ public final class SOLOnionConfig implements ICreativeConfig {
     @CreativeConfig(type = ConfigSynchronization.CLIENT)
     public boolean shouldShowInactiveBenefits = true;
     @CreativeConfig(type = ConfigSynchronization.CLIENT)
+    public boolean shouldShowInactiveDetriments = true;
+    @CreativeConfig(type = ConfigSynchronization.CLIENT)
     public boolean showButtonInInventory = true;
     @CreativeConfig(type = ConfigSynchronization.CLIENT)
     public int buttonInventoryX = 130;
