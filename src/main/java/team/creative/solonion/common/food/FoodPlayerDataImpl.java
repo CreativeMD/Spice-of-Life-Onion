@@ -98,7 +98,7 @@ public final class FoodPlayerDataImpl implements FoodPlayerData {
         if (tag == null)
             return;
         for (int i = 0; i < lastEaten.length; i++)
-            lastEaten[i] = i < tag.size() ? ItemStack.parseOptional(provider, tag.getCompound(i)) : null;
+            lastEaten[i] = i < tag.size() ? ItemStack.parse(provider, tag.getCompoundOrEmpty(i)).orElse(ItemStack.EMPTY) : null;
         startIndex = 0;
         
         diversityCache = -1;

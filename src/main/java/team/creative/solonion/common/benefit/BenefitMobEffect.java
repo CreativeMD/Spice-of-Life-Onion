@@ -120,7 +120,7 @@ public class BenefitMobEffect extends Benefit<MobEffect> {
         public void loadApplied(AppliedMobEffects applied, Tag nbt) {
             if (nbt instanceof ListTag list)
                 for (int i = 0; i < list.size(); i++) {
-                    Reference<MobEffect> mob = BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(list.getString(i))).get();
+                    Reference<MobEffect> mob = BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(list.getStringOr(i, ""))).get();
                     if (mob != null)
                         applied.add(mob);
                 }

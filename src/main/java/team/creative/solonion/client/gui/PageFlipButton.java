@@ -1,7 +1,5 @@
 package team.creative.solonion.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -38,13 +36,11 @@ public final class PageFlipButton extends Button {
         int textureX = 0;
         
         boolean isHovered = getX() <= mouseX && mouseX < getX() + width && getY() <= mouseY && mouseY < getY() + height;
-        if (isHovered) {
+        if (isHovered)
             textureX += 23;
-        }
         
         int textureY = direction == Direction.FORWARD ? 192 : 205;
         
-        RenderSystem.setShaderTexture(0, texture);
         graphics.blitInscribed(texture, getX(), getY(), textureX, textureY, 23, 13);
     }
     

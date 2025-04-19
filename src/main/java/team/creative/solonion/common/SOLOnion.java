@@ -32,15 +32,15 @@ import team.creative.solonion.common.network.FoodListMessage;
 @Mod(SOLOnion.MODID)
 public final class SOLOnion {
     
-    public static boolean isActive(Player player) {
-        return (!SOLOnion.CONFIG.limitProgressionToSurvival || PlayerUtils.getGameType(player).isSurvival());
-    }
-    
     public static final String MODID = "solonion";
     public static final Logger LOGGER = LogManager.getLogger(MODID);
     public static CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, ResourceLocation.tryBuild(SOLOnion.MODID, "main"));
     public static SOLOnionConfig CONFIG;
     public static SOLOnionEvent EVENT;
+    
+    public static boolean isActive(Player player) {
+        return (!SOLOnion.CONFIG.limitProgressionToSurvival || PlayerUtils.getGameType(player).isSurvival());
+    }
     
     public SOLOnion(IEventBus bus) {
         if (FMLLoader.getDist() == Dist.CLIENT)

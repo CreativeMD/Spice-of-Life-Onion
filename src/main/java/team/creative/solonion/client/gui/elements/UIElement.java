@@ -28,6 +28,8 @@ public abstract class UIElement {
         
         elements.stream().flatMap(UIElement::getRecursiveChildren).filter(element -> element.hasTooltip() && element.frame.contains(mouseX, mouseY)).reduce((one, two) -> two) // last element was rendered last and is thus visually on top
                 .ifPresent(element -> element.renderTooltip(graphics, mouseX, mouseY));
+        
+        graphics.flush();
     }
     
     protected static final Minecraft mc = Minecraft.getInstance();
@@ -44,6 +46,7 @@ public abstract class UIElement {
     /** Renders the element to the screen. Note that no transforms have been applied, so you should take your position into account! */
     protected void render(GuiGraphics graphics) {
         children.forEach(child -> child.render(graphics));
+        
     }
     
     private Stream<UIElement> getRecursiveChildren() {

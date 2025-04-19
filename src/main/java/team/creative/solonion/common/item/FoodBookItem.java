@@ -10,8 +10,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.solonion.client.gui.screen.FoodBookScreen;
 
 public final class FoodBookItem extends Item {
-    public FoodBookItem() {
-        super(new Properties());
+    public FoodBookItem(Properties p) {
+        super(p);
     }
     
     @Override

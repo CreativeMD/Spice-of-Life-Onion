@@ -39,7 +39,7 @@ public abstract class BenefitType<T extends Benefit, L, A> {
     }
     
     public static Benefit load(CompoundTag nbt) {
-        BenefitType<?, ?, ?> type = REGISTRY.get(nbt.getString("type"));
+        BenefitType<?, ?, ?> type = REGISTRY.get(nbt.getStringOr("type", ""));
         if (type == null)
             throw new IllegalArgumentException("Could not find type " + nbt);
         return type.factory.apply(nbt);

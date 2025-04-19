@@ -3,8 +3,6 @@ package team.creative.solonion.client.gui.elements;
 import java.awt.Color;
 import java.awt.Rectangle;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.gui.GuiGraphics;
 
 public class UILabel extends UIElement {
@@ -33,8 +31,8 @@ public class UILabel extends UIElement {
         int textWidth = mc.font.width(text) - 1;
         int x = frame.x + (frame.width - textWidth) * alignment.ordinal / 2;
         int y = frame.y + (frame.height - 7) / 2;
-        if (color.getTransparency() == Color.TRANSLUCENT)
-            RenderSystem.enableBlend();
+        //if (color.getTransparency() == Color.TRANSLUCENT)
+        //    RenderSystem.enableBlend();
         graphics.drawString(mc.font, text, x, y, color.getRGB(), false);
     }
     

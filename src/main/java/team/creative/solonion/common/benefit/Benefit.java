@@ -46,7 +46,7 @@ public abstract class Benefit<T> {
                     return new BenefitMobEffect(ResourceLocation.parse(object.get("effect").getAsString()), object.get("value").getAsDouble());
                 } else if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
                     try {
-                        return BenefitType.load(TagParser.parseTag(element.getAsString()));
+                        return BenefitType.load(TagParser.parseCompoundFully(element.getAsString()));
                     } catch (CommandSyntaxException e) {
                         e.printStackTrace();
                     }
@@ -135,8 +135,8 @@ public abstract class Benefit<T> {
     }
     
     public Benefit(Registry<T> registry, CompoundTag nbt) {
-        this.property = new RegistryObjectConfig<>(registry, ResourceLocation.tryParse(nbt.getString("key")));
-        this.value = nbt.getDouble("val");
+        this.property = new RegistryObjectConfig<>(registry, ResourceLocation.tryParse(nbt.getStringOr("key", "")));
+        this.value = nbt.getDoubleOr("val", 0);
     }
     
     @Override

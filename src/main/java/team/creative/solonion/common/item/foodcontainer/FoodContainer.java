@@ -37,7 +37,7 @@ public class FoodContainer extends AbstractContainerMenu {
         else if (player.getOffhandItem().getItem() instanceof FoodContainerItem)
             containerItem = player.getOffhandItem();
         else
-            for (ItemStack stack : playerInventory.items)
+            for (ItemStack stack : playerInventory.getNonEquipmentItems())
                 if (stack.getItem() instanceof FoodContainerItem) {
                     containerItem = stack;
                     break;

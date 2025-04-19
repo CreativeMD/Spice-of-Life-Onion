@@ -57,7 +57,7 @@ public class BenefitAttribute extends Benefit<Attribute> {
     
     public BenefitAttribute(CompoundTag nbt) {
         super(BuiltInRegistries.ATTRIBUTE, nbt);
-        operation = Operation.BY_ID.apply(nbt.getInt("op"));
+        operation = Operation.BY_ID.apply(nbt.getIntOr("op", 0));
     }
     
     @Override
@@ -141,7 +141,7 @@ public class BenefitAttribute extends Benefit<Attribute> {
                 CompoundTag tag = new CompoundTag();
                 tag.putString("att", entry.getKey().attribute.getRegisteredName());
                 tag.putInt("op", entry.getKey().operation.ordinal());
-                tag.put("mod", entry.getValue().save());
+                tag.store("mod", AttributeModifier.CODEC, entry.getValue());
                 list.add(tag);
             }
             return list;
@@ -151,10 +151,10 @@ public class BenefitAttribute extends Benefit<Attribute> {
         public void loadApplied(HashMap<AttributeHolder, AttributeModifier> applied, Tag nbt) {
             if (nbt instanceof ListTag list)
                 for (int i = 0; i < list.size(); i++) {
-                    CompoundTag tag = list.getCompound(i);
-                    Reference<Attribute> att = BuiltInRegistries.ATTRIBUTE.get(ResourceLocation.parse(tag.getString("att"))).get();
+                    CompoundTag tag = list.getCompoundOrEmpty(i);
+                    Reference<Attribute> att = BuiltInRegistries.ATTRIBUTE.get(ResourceLocation.parse(tag.getStringOr("att", ""))).get();
                     if (att != null)
-                        applied.put(new AttributeHolder(att, Operation.BY_ID.apply(tag.getInt("op"))), AttributeModifier.load(tag.getCompound("mod")));
+                        applied.put(new AttributeHolder(att, Operation.BY_ID.apply(tag.getIntOr("op", 0))), tag.read("mod", AttributeModifier.CODEC).orElseThrow());
                 }
         }
         

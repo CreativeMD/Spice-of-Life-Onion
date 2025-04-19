@@ -3,6 +3,7 @@ package team.creative.solonion.common.item.foodcontainer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
@@ -17,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -35,8 +37,8 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
     private String displayName;
     public final int nslots;
     
-    public FoodContainerItem(int nslots, String displayName) {
-        super(new Properties().stacksTo(1).food(new FoodProperties.Builder().build()));
+    public FoodContainerItem(Properties p, int nslots, String displayName) {
+        super(p.useItemDescriptionPrefix().stacksTo(1).food(new FoodProperties.Builder().build()));
         
         this.displayName = displayName;
         this.nslots = nslots;
@@ -125,9 +127,9 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
     }
     
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("item." + SOLOnion.MODID + ".container.open", Component.keybind("key.sneak"), Component.keybind("key.use")));
-        super.appendHoverText(stack, context, tooltip, flag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(Component.translatable("item." + SOLOnion.MODID + ".container.open", Component.keybind("key.sneak"), Component.keybind("key.use")));
+        super.appendHoverText(stack, context, display, tooltip, flag);
     }
     
     @Nullable

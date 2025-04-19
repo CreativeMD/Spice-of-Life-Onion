@@ -15,16 +15,16 @@ import team.creative.solonion.common.item.foodcontainer.FoodContainerItem;
 
 public final class SOLOnionItems {
     
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, SOLOnion.MODID);
+    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(SOLOnion.MODID);
     
-    public static final Supplier<Item> BOOK = ITEMS.register("food_book", () -> new FoodBookItem());
-    public static final Supplier<Item> LUNCHBOX = ITEMS.register("lunchbox", () -> new FoodContainerItem(9, "lunchbox"));
-    public static final Supplier<Item> LUNCHBAG = ITEMS.register("lunchbag", () -> new FoodContainerItem(5, "lunchbag"));
-    public static final Supplier<Item> GOLDEN_LUNCHBOX = ITEMS.register("golden_lunchbox", () -> new FoodContainerItem(14, "golden_lunchbox"));
+    public static final Supplier<Item> BOOK = ITEMS.registerItem("food_book", FoodBookItem::new);
+    public static final Supplier<Item> LUNCHBOX = ITEMS.registerItem("lunchbox", p -> new FoodContainerItem(p, 9, "lunchbox"));
+    public static final Supplier<Item> LUNCHBAG = ITEMS.registerItem("lunchbag", p -> new FoodContainerItem(p, 5, "lunchbag"));
+    public static final Supplier<Item> GOLDEN_LUNCHBOX = ITEMS.registerItem("golden_lunchbox", p -> new FoodContainerItem(p, 14, "golden_lunchbox"));
     
     public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(BuiltInRegistries.MENU, SOLOnion.MODID);
-    public static final Supplier<MenuType<FoodContainer>> FOOD_CONTAINER = MENU_TYPES.register("food_container", () -> IMenuTypeExtension.create(
-        ((windowId, inv, data) -> new FoodContainer(windowId, inv, inv.player))));
+    public static final Supplier<MenuType<FoodContainer>> FOOD_CONTAINER = MENU_TYPES.register("food_container", () -> IMenuTypeExtension.create(((windowId, inv,
+            data) -> new FoodContainer(windowId, inv, inv.player))));
     
     public static void registerTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {

@@ -59,9 +59,9 @@ public final class SOLOnionConfig implements ICreativeConfig {
     
     @CreativeConfig
     public List<BenefitThreshold> benefits = Arrays.asList(new BenefitThreshold(3, new BenefitAttribute(Attributes.MAX_HEALTH, 2)),
-        new BenefitThreshold(5, new BenefitMobEffect(MobEffects.DAMAGE_BOOST, 0)), new BenefitThreshold(7, new BenefitMobEffect(MobEffects.REGENERATION, 0)),
-        new BenefitThreshold(10, new BenefitMobEffect(MobEffects.MOVEMENT_SPEED, 0)), new BenefitThreshold(13, new BenefitAttribute(Attributes.ARMOR_TOUGHNESS, 2)),
-        new BenefitThreshold(18, new BenefitMobEffect(MobEffects.DAMAGE_BOOST, 1)), new BenefitThreshold(25, new BenefitAttribute(Attributes.MAX_HEALTH, 4)),
+        new BenefitThreshold(5, new BenefitMobEffect(MobEffects.STRENGTH, 0)), new BenefitThreshold(7, new BenefitMobEffect(MobEffects.REGENERATION, 0)),
+        new BenefitThreshold(10, new BenefitMobEffect(MobEffects.SPEED, 0)), new BenefitThreshold(13, new BenefitAttribute(Attributes.ARMOR_TOUGHNESS, 2)),
+        new BenefitThreshold(18, new BenefitMobEffect(MobEffects.STRENGTH, 1)), new BenefitThreshold(25, new BenefitAttribute(Attributes.MAX_HEALTH, 4)),
         new BenefitThreshold(31, new BenefitAttribute(Attributes.MAX_HEALTH, 6)));
     
     @CreativeConfig
