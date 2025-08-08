@@ -29,8 +29,8 @@ public final class SOLOnionItems {
     public static void registerTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
             event.accept(BOOK.get());
-            event.accept(LUNCHBOX.get());
             event.accept(LUNCHBAG.get());
+            event.accept(LUNCHBOX.get());
             event.accept(GOLDEN_LUNCHBOX.get());
         }
     }

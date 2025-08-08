@@ -1,16 +1,7 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "category": "food",
-    "pattern": [
-        " A ",
-        "ABA",
-        "AAA"
-    ],
-    "key": {
-        "A": "minecraft:gold_ingot",
-        "B": "solonion:lunchbox"
-    },
-    "result": {
-        "id": "solonion:golden_lunchbox"
-    }
+    "type": "minecraft:crafting_transmute",
+    "category": "equipment",
+    "input": "solonion:lunchbox",
+    "material": "minecraft:gold_block",
+    "result": "solonion:golden_lunchbox"
 }
