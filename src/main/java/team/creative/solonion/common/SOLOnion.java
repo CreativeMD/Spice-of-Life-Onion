@@ -49,6 +49,7 @@ public final class SOLOnion {
         bus.addListener(this::registerCapabilities);
         SOLOnionItems.ITEMS.register(bus);
         SOLOnionItems.MENU_TYPES.register(bus);
+        SOLOnionItems.RECIPE_SERIALIZERS.register(bus);
         bus.addListener(SOLOnionItems::registerTabs);
         NeoForge.EVENT_BUS.addListener(this::command);
         SOLOnionAPI.ATTACHMENT_TYPES.register(bus);

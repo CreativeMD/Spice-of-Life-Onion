@@ -1,19 +1,11 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        " A ",
-        "ABA",
-        "AAA"
-    ],
-    "key": {
-        "A": {
-            "item": "minecraft:iron_ingot"
-        },
-        "B": {
-            "item": "solonion:lunchbag"
-        }
+    "type": "solonion:upgrade_food_container",
+    "category": "equipment",
+    "input": {
+        "item": "solonion:lunchbag"
     },
-    "result": {
-        "id": "solonion:lunchbox"
-    }
+    "material": {
+        "item": "minecraft:iron_block"
+    },
+    "result": "solonion:lunchbox"
 }
