@@ -3,11 +3,11 @@ package team.creative.solonion.common.item;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.KnowledgeBookItem;
 import net.minecraft.world.level.Level;
 import team.creative.solonion.client.gui.screen.FoodBookScreen;
 
-public final class FoodBookItem extends Item {
+public final class FoodBookItem extends KnowledgeBookItem {
     
     public FoodBookItem(Properties p) {
         super(p);
