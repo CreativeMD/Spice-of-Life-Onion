@@ -42,3 +42,4 @@ dependencies {
 modDependencies = [
     [ modId: "creativecore", type: "required", ordering: "NONE", side: "BOTH", versionRange: "[" + creativecore_version + ",)" ]
 ]
+modMixins = [ "solonion.mixins.json" ]

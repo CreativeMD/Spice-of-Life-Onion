@@ -33,3 +33,6 @@ license="LGPL-3.0-only"
    side="BOTH"
    versionRange="[2.13.0,)"
 
+[[mixins]]
+   config="solonion.mixins.json"
+

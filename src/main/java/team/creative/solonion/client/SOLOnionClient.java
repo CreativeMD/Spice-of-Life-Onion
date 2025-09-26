@@ -84,9 +84,8 @@ public class SOLOnionClient {
     }
     
     public static void addButton(final ScreenEvent.Init.Post evt) {
-        if (evt.getScreen() instanceof InventoryScreen s && SOLOnion.CONFIG.showButtonInInventory) {
+        if (evt.getScreen() instanceof InventoryScreen s && SOLOnion.CONFIG.showButtonInInventory)
             evt.addListener(new UIInventoryButton(s));
-        }
     }
     
     public static void addTooltip(double diversity, int lastEaten, ItemStack stack, List<Component> tooltip, Player player) {
