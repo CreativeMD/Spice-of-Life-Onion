@@ -6,7 +6,7 @@ license="LGPL-3.0-only"
 [[mods]]
     modId="solonion"
     logoFile="solonion.png"
-    version="1.5.1"
+    version="1.5.2"
     displayName="Spice of Life Onion"
     displayURL="https://modrinth.com/mod/spice-of-life-onion"
     authors="tarinoita, CreativeMD"

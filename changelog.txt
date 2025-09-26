@@ -1,3 +1,6 @@
+1.5.2
+Fixed button in inventory screen being out of place when opening/ closing recipe book
+
 1.5.1
 Changed recipe for upgrading lunchbag and lunchbox
 Fixed deleting content when upgrading
