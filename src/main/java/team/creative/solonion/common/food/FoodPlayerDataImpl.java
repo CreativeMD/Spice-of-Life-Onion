@@ -6,16 +6,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jetbrains.annotations.UnknownNullability;
-
 import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap.Entry;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import team.creative.creativecore.common.util.type.itr.ArrayOffsetIterator;
 import team.creative.creativecore.common.util.type.itr.FilterIterator;
 import team.creative.creativecore.common.util.type.list.Tuple;
@@ -85,20 +83,27 @@ public final class FoodPlayerDataImpl implements FoodPlayerData {
     }
     
     @Override
-    public @UnknownNullability ListTag serializeNBT(Provider provider) {
-        ListTag list = new ListTag();
-        for (ItemStack stack : this)
-            list.add(stack.save(provider));
+    public void serialize(ValueOutput output) {
+        var list = output.list("eaten", ItemStack.CODEC);
         
-        return list;
+        for (ItemStack stack : this)
+            list.add(stack);
     }
     
     @Override
-    public void deserializeNBT(Provider provider, ListTag tag) {
-        if (tag == null)
-            return;
-        for (int i = 0; i < lastEaten.length; i++)
-            lastEaten[i] = i < tag.size() ? ItemStack.parse(provider, tag.getCompoundOrEmpty(i)).orElse(ItemStack.EMPTY) : null;
+    public void deserialize(ValueInput input) {
+        var list = input.listOrEmpty("eaten", ItemStack.CODEC);
+        
+        int index = 0;
+        for (Iterator<ItemStack> iterator = list.iterator(); iterator.hasNext();) {
+            lastEaten[index] = iterator.next();
+            if (index >= lastEaten.length)
+                break;
+            index++;
+        }
+        
+        for (int i = index; i < lastEaten.length; i++)
+            lastEaten[i] = null;
         startIndex = 0;
         
         diversityCache = -1;

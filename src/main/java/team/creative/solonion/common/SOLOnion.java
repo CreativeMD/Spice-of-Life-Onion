@@ -20,7 +20,6 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.network.CreativeNetwork;
-import team.creative.creativecore.common.util.mc.PlayerUtils;
 import team.creative.solonion.api.SOLOnionAPI;
 import team.creative.solonion.client.SOLOnionClient;
 import team.creative.solonion.common.command.FoodListCommand;
@@ -39,7 +38,7 @@ public final class SOLOnion {
     public static SOLOnionEvent EVENT;
     
     public static boolean isActive(Player player) {
-        return (!SOLOnion.CONFIG.limitProgressionToSurvival || PlayerUtils.getGameType(player).isSurvival());
+        return (!SOLOnion.CONFIG.limitProgressionToSurvival || player.gameMode().isSurvival());
     }
     
     public SOLOnion(IEventBus bus) {

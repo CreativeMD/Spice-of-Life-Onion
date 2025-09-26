@@ -1,17 +1,14 @@
 {
     "type": "minecraft:crafting_shaped",
+    "category": "food",
     "pattern": [
         " A ",
         "ABA",
         "AAA"
     ],
     "key": {
-        "A": {
-            "item": "minecraft:gold_ingot"
-        },
-        "B": {
-            "item": "solonion:lunchbox"
-        }
+        "A": "minecraft:gold_ingot",
+        "B": "solonion:lunchbox"
     },
     "result": {
         "id": "solonion:golden_lunchbox"

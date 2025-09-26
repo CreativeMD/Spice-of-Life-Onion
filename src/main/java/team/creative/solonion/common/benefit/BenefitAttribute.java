@@ -8,15 +8,11 @@ import javax.annotation.Nullable;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -24,8 +20,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.premade.registry.RegistryObjectConfig;
 import team.creative.creativecore.common.gui.GuiParent;
@@ -86,24 +82,18 @@ public class BenefitAttribute extends Benefit<Attribute> {
         }
         
         @Override
-        @OnlyIn(Dist.CLIENT)
-        @Environment(EnvType.CLIENT)
         public void createControls(GuiParent parent, IGuiConfigParent configParent) {
-            parent.add(new GuiStateButton<Operation>("operation", new TextMapBuilder<Operation>().addComponent(Operation.values(), x -> Component.translatable(
+            parent.add(new GuiStateButton<Operation>(parent, "operation", new TextMapBuilder<Operation>().addComponent(Operation.values(), x -> Component.translatable(
                 "config.solonion." + x.getSerializedName()))));
         }
         
         @Override
-        @OnlyIn(Dist.CLIENT)
-        @Environment(EnvType.CLIENT)
         public void loadValue(BenefitAttribute value, GuiParent parent, IGuiConfigParent configParent) {
             GuiStateButton<Operation> op = parent.get("operation");
             op.select(value.operation);
         }
         
         @Override
-        @OnlyIn(Dist.CLIENT)
-        @Environment(EnvType.CLIENT)
         public BenefitAttribute saveValue(ResourceLocation location, double value, GuiParent parent, IGuiConfigParent configParent) {
             GuiStateButton<Operation> op = parent.get("operation");
             return new BenefitAttribute(location, value, op.selected());
@@ -138,27 +128,25 @@ public class BenefitAttribute extends Benefit<Attribute> {
         }
         
         @Override
-        public Tag saveApplied(HashMap<AttributeHolder, AttributeModifier> applied) {
-            ListTag list = new ListTag();
+        public void saveApplied(HashMap<AttributeHolder, AttributeModifier> applied, ValueOutput output) {
+            var list = output.childrenList(getId());
             for (Entry<AttributeHolder, AttributeModifier> entry : applied.entrySet()) {
-                CompoundTag tag = new CompoundTag();
-                tag.putString("att", entry.getKey().attribute.getRegisteredName());
-                tag.putInt("op", entry.getKey().operation.ordinal());
-                tag.store("mod", AttributeModifier.CODEC, entry.getValue());
-                list.add(tag);
+                var child = list.addChild();
+                child.putString("att", entry.getKey().attribute.getRegisteredName());
+                child.putInt("op", entry.getKey().operation.ordinal());
+                child.store("mod", AttributeModifier.CODEC, entry.getValue());
             }
-            return list;
         }
         
         @Override
-        public void loadApplied(HashMap<AttributeHolder, AttributeModifier> applied, Tag nbt) {
-            if (nbt instanceof ListTag list)
-                for (int i = 0; i < list.size(); i++) {
-                    CompoundTag tag = list.getCompoundOrEmpty(i);
-                    Reference<Attribute> att = BuiltInRegistries.ATTRIBUTE.get(ResourceLocation.parse(tag.getStringOr("att", ""))).get();
+        public void loadApplied(HashMap<AttributeHolder, AttributeModifier> applied, ValueInput input) {
+            var list = input.childrenList(getId());
+            if (list.isPresent())
+                list.get().forEach(child -> {
+                    Reference<Attribute> att = BuiltInRegistries.ATTRIBUTE.get(ResourceLocation.parse(child.getStringOr("att", ""))).get();
                     if (att != null)
-                        applied.put(new AttributeHolder(att, Operation.BY_ID.apply(tag.getIntOr("op", 0))), tag.read("mod", AttributeModifier.CODEC).orElseThrow());
-                }
+                        applied.put(new AttributeHolder(att, Operation.BY_ID.apply(child.getIntOr("op", 0))), child.read("mod", AttributeModifier.CODEC).orElseThrow());
+                });
         }
         
         @Override

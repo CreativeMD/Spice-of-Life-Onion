@@ -9,22 +9,16 @@ import javax.annotation.Nullable;
 
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
@@ -67,18 +61,12 @@ public class BenefitMobEffect extends Benefit<MobEffect> {
         }
         
         @Override
-        @OnlyIn(Dist.CLIENT)
-        @Environment(EnvType.CLIENT)
         public void createControls(GuiParent parent, IGuiConfigParent configParent) {}
         
         @Override
-        @OnlyIn(Dist.CLIENT)
-        @Environment(EnvType.CLIENT)
         public void loadValue(BenefitMobEffect value, GuiParent parent, IGuiConfigParent configParent) {}
         
         @Override
-        @OnlyIn(Dist.CLIENT)
-        @Environment(EnvType.CLIENT)
         public BenefitMobEffect saveValue(ResourceLocation location, double value, GuiParent parent, IGuiConfigParent configParent) {
             return new BenefitMobEffect(location, value);
         }
@@ -109,21 +97,17 @@ public class BenefitMobEffect extends Benefit<MobEffect> {
         }
         
         @Override
-        public Tag saveApplied(AppliedMobEffects applied) {
-            ListTag list = new ListTag();
+        public void saveApplied(AppliedMobEffects applied, ValueOutput output) {
+            var list = output.list(getId(), BuiltInRegistries.MOB_EFFECT.holderByNameCodec());
             for (Holder<MobEffect> effect : applied)
-                list.add(StringTag.valueOf(effect.unwrapKey().get().location().toString()));
-            return list;
+                list.add(effect);
         }
         
         @Override
-        public void loadApplied(AppliedMobEffects applied, Tag nbt) {
-            if (nbt instanceof ListTag list)
-                for (int i = 0; i < list.size(); i++) {
-                    Reference<MobEffect> mob = BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(list.getStringOr(i, ""))).get();
-                    if (mob != null)
-                        applied.add(mob);
-                }
+        public void loadApplied(AppliedMobEffects applied, ValueInput input) {
+            var list = input.list(getId(), BuiltInRegistries.MOB_EFFECT.holderByNameCodec());
+            if (list.isPresent())
+                list.get().forEach(applied::add);
         }
         
         @Override

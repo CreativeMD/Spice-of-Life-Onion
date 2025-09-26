@@ -2,16 +2,14 @@ package team.creative.solonion.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.solonion.common.SOLOnion;
 
-@OnlyIn(Dist.CLIENT)
 public final class PageFlipButton extends Button {
     
     private static final ResourceLocation texture = ResourceLocation.tryBuild(SOLOnion.MODID, "textures/gui/food_book.png");
@@ -40,8 +38,7 @@ public final class PageFlipButton extends Button {
             textureX += 23;
         
         int textureY = direction == Direction.FORWARD ? 192 : 205;
-        
-        graphics.blitInscribed(texture, getX(), getY(), textureX, textureY, 23, 13);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), textureX, textureY, 23, 13, 256, 256);
     }
     
     public void updateState() {

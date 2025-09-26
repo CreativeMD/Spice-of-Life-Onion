@@ -3,7 +3,7 @@ package team.creative.solonion.client.gui.elements;
 import java.awt.Rectangle;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 
 public class UIImage extends UIElement {
@@ -26,8 +26,9 @@ public class UIImage extends UIElement {
         
         int imageWidth = image.partOfTexture.width;
         int imageHeight = image.partOfTexture.height;
-        graphics.blit(RenderType::guiTextured, image.textureLocation, frame.x + (int) Math.floor((frame.width - imageWidth) / 2d), frame.y + (int) Math.floor(
-            (frame.height - imageHeight) / 2d), 0, image.partOfTexture.x, image.partOfTexture.y, imageWidth, imageHeight, 256, 256);
+        
+        graphics.blit(RenderPipelines.GUI_TEXTURED, image.textureLocation, frame.x + (int) Math.floor((frame.width - imageWidth) / 2d), frame.y + (int) Math.floor(
+            (frame.height - imageHeight) / 2d), image.partOfTexture.x, image.partOfTexture.y, imageWidth, imageHeight, 256, 256);
     }
     
     public static class Image {

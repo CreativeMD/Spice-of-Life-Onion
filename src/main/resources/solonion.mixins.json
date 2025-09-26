@@ -1,0 +1,14 @@
+{
+    "required": true,
+    "package": "team.creative.solonion.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "refmap": "solonion.mixin.refmap.json",
+    "server": [
+    ],
+    "mixins": [
+    ],
+    "client": [
+        "InventoryScreenMixin"
+    ],
+    "minVersion": "0.8"
+}

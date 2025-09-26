@@ -14,8 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.mc.LanguageUtils;
 import team.creative.solonion.api.FoodPlayerData;
 import team.creative.solonion.api.SOLOnionAPI;
@@ -30,7 +28,6 @@ import team.creative.solonion.client.gui.elements.UILabel;
 import team.creative.solonion.common.SOLOnion;
 import team.creative.solonion.common.benefit.BenefitThreshold;
 
-@OnlyIn(Dist.CLIENT)
 public final class FoodBookScreen extends Screen implements PageFlipButton.Pageable {
     private static final ResourceLocation texture = ResourceLocation.tryBuild(SOLOnion.MODID, "textures/gui/food_book.png");
     private static final UIImage.Image bookImage = new UIImage.Image(texture, new Rectangle(0, 0, 186, 192));
@@ -139,9 +136,6 @@ public final class FoodBookScreen extends Screen implements PageFlipButton.Pagea
         String header = LanguageUtils.translate("gui.solonion.food_book." + headerLocalizationPath, stacks.size());
         pages.addAll(FoodListPage.pages(background.frame, header, stacks, player));
     }
-    
-    @Override
-    protected void renderBlurredBackground() {}
     
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {

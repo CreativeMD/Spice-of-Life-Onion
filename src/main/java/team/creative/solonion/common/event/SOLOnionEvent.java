@@ -4,6 +4,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -12,6 +13,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -41,7 +44,7 @@ public class SOLOnionEvent {
     }
     
     private void updateBenefits(Player player) {
-        if (player.getCommandSenderWorld().isClientSide)
+        if (player.level().isClientSide)
             return;
         
         FoodPlayerData foodList = SOLOnionAPI.getFoodCapability(player);
@@ -88,11 +91,17 @@ public class SOLOnionEvent {
         var provider = newPlayer.registryAccess();
         
         FoodPlayerDataImpl food = new FoodPlayerDataImpl();
-        food.deserializeNBT(provider, SOLOnionAPI.getFoodCapability(originalPlayer).serializeNBT(provider));
+        var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
+        SOLOnionAPI.getFoodCapability(originalPlayer).serialize(output);
+        var input = TagValueInput.create(ProblemReporter.DISCARDING, provider, output.buildResult());
+        food.deserialize(input);
         newPlayer.setData(SOLOnionAPI.FOOD_DATA, food);
         
         BenefitPlayerDataImpl benefit = new BenefitPlayerDataImpl();
-        benefit.deserializeNBT(provider, SOLOnionAPI.getBenefitCapability(originalPlayer).serializeNBT(provider));
+        output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
+        SOLOnionAPI.getBenefitCapability(originalPlayer).serialize(output);
+        input = TagValueInput.create(ProblemReporter.DISCARDING, provider, output.buildResult());
+        benefit.deserialize(input);
         newPlayer.setData(SOLOnionAPI.BENEFIT_DATA, benefit);
     }
     

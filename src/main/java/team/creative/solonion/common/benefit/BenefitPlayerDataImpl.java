@@ -3,11 +3,9 @@ package team.creative.solonion.common.benefit;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import org.jetbrains.annotations.UnknownNullability;
-
-import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import team.creative.solonion.api.BenefitPlayerData;
 
 public class BenefitPlayerDataImpl implements BenefitPlayerData {
@@ -30,31 +28,30 @@ public class BenefitPlayerDataImpl implements BenefitPlayerData {
     }
     
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(Provider provider) {
-        CompoundTag nbt = new CompoundTag();
+    public void serialize(ValueOutput output) {
         for (Entry<BenefitType, Object> entry : applied.entrySet()) {
-            var tag = entry.getKey().saveApplied(entry.getValue());
-            if (tag != null)
-                nbt.put(entry.getKey().getId(), tag);
+            var child = output.child(entry.getKey().getId());
+            entry.getKey().saveApplied(entry.getValue(), child);
+            if (child.isEmpty())
+                output.discard(entry.getKey().getId());
         }
-        
-        return nbt;
     }
     
     @Override
-    public void deserializeNBT(Provider provider, CompoundTag nbt) {
+    public void deserialize(ValueInput input) {
         for (Entry<BenefitType, Object> entry : applied.entrySet())
             entry.getKey().clearApplied(entry.getValue());
         
-        if (nbt == null)
+        if (input == null)
             return;
         
         for (BenefitType type : BenefitType.types()) {
-            if (nbt.contains(type.getId())) {
+            var child = input.child(type.getId());
+            if (child.isPresent()) {
                 var app = applied.get(type);
                 if (app == null)
                     applied.put(type, app = type.createApplied());
-                type.loadApplied(app, nbt.get(type.getId()));
+                type.loadApplied(app, child.get());
             } else
                 applied.remove(type);
         }

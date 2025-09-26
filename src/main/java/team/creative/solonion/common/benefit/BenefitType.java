@@ -5,16 +5,13 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
@@ -82,16 +79,10 @@ public abstract class BenefitType<T extends Benefit, L, A> {
     
     public abstract Registry registry();
     
-    @OnlyIn(Dist.CLIENT)
-    @Environment(EnvType.CLIENT)
     public abstract void createControls(GuiParent parent, IGuiConfigParent configParent);
     
-    @OnlyIn(Dist.CLIENT)
-    @Environment(EnvType.CLIENT)
     public abstract void loadValue(T value, GuiParent parent, IGuiConfigParent configParent);
     
-    @OnlyIn(Dist.CLIENT)
-    @Environment(EnvType.CLIENT)
     public abstract T saveValue(ResourceLocation location, double value, GuiParent parent, IGuiConfigParent configParent);
     
     public abstract L createStack();
@@ -110,8 +101,8 @@ public abstract class BenefitType<T extends Benefit, L, A> {
     
     public abstract void clearApplied(A applied);
     
-    public abstract void loadApplied(A applied, Tag nbt);
+    public abstract void loadApplied(A applied, ValueInput input);
     
-    public abstract Tag saveApplied(A applied);
+    public abstract void saveApplied(A applied, ValueOutput output);
     
 }

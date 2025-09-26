@@ -2,8 +2,11 @@ package team.creative.solonion.client.gui.elements;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import team.creative.solonion.client.SOLOnionClient;
@@ -23,7 +26,9 @@ public class UIFoodQueueItem extends UIItemStack {
     @Override
     protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
         List<Component> tooltip = getFoodQueueTooltip();
-        graphics.renderComponentTooltip(mc.font, tooltip, mouseX, mouseY);
+        
+        graphics.renderTooltip(mc.font, tooltip.stream().map(x -> ClientTooltipComponent.create(x.getVisualOrderText())).collect(Collectors.toList()), mouseX, mouseY,
+            DefaultTooltipPositioner.INSTANCE, null);
     }
     
     private List<Component> getFoodQueueTooltip() {

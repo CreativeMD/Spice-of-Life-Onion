@@ -4,20 +4,19 @@ import static java.util.Collections.singletonList;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public abstract class UIElement {
     public static void render(GuiGraphics graphics, UIElement element, int mouseX, int mouseY) {
         render(graphics, singletonList(element), mouseX, mouseY);
@@ -28,8 +27,6 @@ public abstract class UIElement {
         
         elements.stream().flatMap(UIElement::getRecursiveChildren).filter(element -> element.hasTooltip() && element.frame.contains(mouseX, mouseY)).reduce((one, two) -> two) // last element was rendered last and is thus visually on top
                 .ifPresent(element -> element.renderTooltip(graphics, mouseX, mouseY));
-        
-        graphics.flush();
     }
     
     protected static final Minecraft mc = Minecraft.getInstance();
@@ -68,7 +65,8 @@ public abstract class UIElement {
         if (tooltip == null)
             return;
         
-        graphics.renderComponentTooltip(mc.font, Collections.singletonList(Component.literal(tooltip)), mouseX, mouseY);
+        graphics.renderTooltip(mc.font, List.of(ClientTooltipComponent.create(Component.literal(tooltip).getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE,
+            null);
     }
     
     /** Renders a tooltip at the given position.
@@ -84,7 +82,8 @@ public abstract class UIElement {
     protected final void renderTooltip(GuiGraphics graphics, ItemStack itemStack, List<Component> tooltip, int mouseX, int mouseY) {
         assert mc.screen != null;
         
-        graphics.renderComponentTooltip(mc.font, tooltip, mouseX, mouseY, itemStack);
+        graphics.renderTooltip(mc.font, tooltip.stream().map(x -> ClientTooltipComponent.create(x.getVisualOrderText())).collect(Collectors.toList()), mouseX, mouseY,
+            DefaultTooltipPositioner.INSTANCE, null);
     }
     
     /** calculates and sets the frame to the smallest rectangle enclosing all children's frames */

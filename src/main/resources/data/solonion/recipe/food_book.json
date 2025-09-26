@@ -1,14 +1,12 @@
 {
     "type": "minecraft:crafting_shapeless",
+    "category": "food",
     "ingredients": [
-        {
-            "item": "minecraft:book"
-        },
-        {
-            "item": "minecraft:potato"
-        }
+        "minecraft:book",
+        "minecraft:potato"
     ],
     "result": {
+        "count": 1,
         "id": "solonion:food_book"
     }
 }

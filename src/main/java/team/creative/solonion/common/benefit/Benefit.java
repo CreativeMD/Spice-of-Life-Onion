@@ -5,8 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -14,8 +12,6 @@ import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
@@ -60,11 +56,9 @@ public abstract class Benefit<T> {
             }
             
             @Override
-            @OnlyIn(Dist.CLIENT)
-            @Environment(EnvType.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-                parent.flow = GuiFlow.STACK_Y;
-                parent.add(new GuiStateButton<BenefitType>("state", 0, BenefitType.typeMap()) {
+                parent.setFlow(GuiFlow.STACK_Y);
+                parent.add(new GuiStateButton<BenefitType>(parent, "state", 0, BenefitType.typeMap()) {
                     
                     @Override
                     public void raiseEvent(GuiEvent event) {
@@ -85,14 +79,12 @@ public abstract class Benefit<T> {
                     }
                     
                 });
-                parent.add(new GuiComboBox<ResourceLocation>("elements", new TextMapBuilder<ResourceLocation>()).setSearchbar(true));
-                parent.add(new GuiTextfield("value").setFloatOnly().setDim(20, 6));
-                parent.add(new GuiParent("subConfig"));
+                parent.add(new GuiComboBox<ResourceLocation>(parent, "elements", new TextMapBuilder<ResourceLocation>()).setSearchbar(true));
+                parent.add(new GuiTextfield(parent, "value").setFloatOnly().setDim(20, 6));
+                parent.add(new GuiParent(parent, "subConfig"));
             }
             
             @Override
-            @OnlyIn(Dist.CLIENT)
-            @Environment(EnvType.CLIENT)
             public void loadValue(Benefit value, Benefit defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 GuiStateButton<BenefitType> state = parent.get("state");
                 state.select(BenefitType.getType(value));
@@ -109,8 +101,6 @@ public abstract class Benefit<T> {
             }
             
             @Override
-            @OnlyIn(Dist.CLIENT)
-            @Environment(EnvType.CLIENT)
             protected Benefit saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 GuiStateButton<BenefitType> state = parent.get("state");
                 GuiComboBox<ResourceLocation> box = (GuiComboBox<ResourceLocation>) parent.get("elements");
