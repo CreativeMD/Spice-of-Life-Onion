@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -18,6 +19,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import team.creative.solonion.common.item.SOLOnionItems;
 
 public class FoodContainer extends AbstractContainerMenu {
@@ -44,22 +46,26 @@ public class FoodContainer extends AbstractContainerMenu {
                 }
             
         this.playerInventory = playerInventory;
-        var itemHandler = containerItem.getCapability(Capabilities.ItemHandler.ITEM);
+        var itemHandler = containerItem.getCapability(Capabilities.Item.ITEM, ItemAccess.forPlayerSlot(player, id));
+        SimpleContainer container = new SimpleContainer(itemHandler.size());
+        for (int i = 0; i < container.getContainerSize(); i++)
+            container.setItem(i, itemHandler.getResource(i).toStack(itemHandler.getAmountAsInt(i)));
+        
         if (itemHandler != null) {
-            nslots = itemHandler.getSlots();
-            int slotsPerRow = itemHandler.getSlots();
-            if (itemHandler.getSlots() > 9)
-                slotsPerRow = itemHandler.getSlots() / 2;
+            nslots = itemHandler.size();
+            int slotsPerRow = itemHandler.size();
+            if (itemHandler.size() > 9)
+                slotsPerRow = itemHandler.size() / 2;
             int xStart = (2 * 8 + 9 * 18 - slotsPerRow * 18) / 2;
             int yStart = 17 + 18;
-            if (itemHandler.getSlots() > 9)
+            if (itemHandler.size() > 9)
                 yStart = 17 + (84 - 36 - 23) / 2;
-            for (int j = 0; j < itemHandler.getSlots(); j++) {
+            for (int j = 0; j < itemHandler.size(); j++) {
                 int row = j / slotsPerRow;
                 int col = j % slotsPerRow;
                 int xPos = xStart + col * 18;
                 int yPos = yStart + row * 18;
-                this.addSlot(new FoodSlot(itemHandler, j, xPos, yPos));
+                this.addSlot(new FoodSlot(container, j, xPos, yPos));
             }
         }
         
@@ -67,10 +73,10 @@ public class FoodContainer extends AbstractContainerMenu {
             
             @Override
             public void slotChanged(AbstractContainerMenu menu, int slot, ItemStack stack) {
-                if (slot < itemHandler.getSlots()) {
-                    List<ItemStack> stacks = new ArrayList<>(itemHandler.getSlots());
-                    for (int i = 0; i < itemHandler.getSlots(); i++)
-                        stacks.add(itemHandler.getStackInSlot(i));
+                if (slot < container.getContainerSize()) {
+                    List<ItemStack> stacks = new ArrayList<>(container.getContainerSize());
+                    for (int i = 0; i < container.getContainerSize(); i++)
+                        stacks.add(container.getItem(i));
                     containerItem.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(stacks));
                 }
                 

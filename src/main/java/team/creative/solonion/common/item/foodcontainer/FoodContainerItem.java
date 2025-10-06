@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -23,8 +24,11 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import team.creative.creativecore.common.util.inventory.InventoryUtils;
 import team.creative.creativecore.common.util.type.list.TupleList;
 import team.creative.solonion.api.FoodPlayerData;
 import team.creative.solonion.api.OnionFoodContainer;
@@ -46,54 +50,60 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
     
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        var handler = Capabilities.ItemHandler.BLOCK.getCapability(context.getLevel(), context.getClickedPos(), null, null, context.getClickedFace());
+        var handler = Capabilities.Item.BLOCK.getCapability(context.getLevel(), context.getClickedPos(), null, null, context.getClickedFace());
         if (handler == null)
             return super.useOn(context);
         
-        ItemStackHandler inv = getInventory(context.getItemInHand());
-        if (inv == null)
-            return super.useOn(context);
+        ResourceHandler<ItemResource> inv = context.getItemInHand().getCapability(Capabilities.Item.ITEM, ItemAccess.forStack(context.getItemInHand()));
         TupleList<Double, Integer> bestStacks = new TupleList<Double, Integer>();
-        for (int i = 0; i < handler.getSlots(); i++) {
-            ItemStack stack = handler.getStackInSlot(i);
-            if (!stack.isEmpty() && stack.get(DataComponents.FOOD) != null && OriginsManager.isEdible(context.getPlayer(), stack)) {
-                for (int j = 0; j < inv.getSlots(); j++) { // Fill up the slots which are already taken
-                    var toBeStacked = inv.getStackInSlot(j);
-                    if (ItemStack.isSameItem(stack, toBeStacked) && ItemStack.isSameItemSameComponents(stack, toBeStacked)) {
-                        int maxStackSize = Math.min(stack.getMaxStackSize(), inv.getSlotLimit(j));
-                        if (!toBeStacked.isEmpty() && toBeStacked.getCount() < maxStackSize)
-                            toBeStacked.grow(handler.extractItem(i, maxStackSize - toBeStacked.getCount(), false).getCount());
-                        stack = handler.getStackInSlot(i);
-                        if (stack.isEmpty())
-                            break;
+        for (int i = 0; i < handler.size(); i++) {
+            ItemResource resource = handler.getResource(i);
+            if (!resource.isEmpty() && resource.get(DataComponents.FOOD) != null && OriginsManager.isEdible(context.getPlayer(), resource.toStack(handler.getAmountAsInt(i)))) {
+                
+                for (int j = 0; j < inv.size(); j++) { // Fill up the slots which are already taken
+                    var toBeStacked = inv.getResource(j);
+                    
+                    if (resource.is(toBeStacked.getItem()) && resource.getComponents().equals(toBeStacked.getComponents())) {
+                        int maxStackSize = Math.min(resource.getMaxStackSize(), inv.getCapacityAsInt(j, toBeStacked));
+                        if (!toBeStacked.isEmpty() && inv.getAmountAsInt(j) < maxStackSize) {
+                            try (var tx = Transaction.open(null)) {
+                                inv.insert(j, toBeStacked, handler.extract(i, resource, maxStackSize - inv.getAmountAsInt(j), tx), tx);
+                                tx.commit();
+                            }
+                            
+                            if (handler.getAmountAsInt(i) <= 0)
+                                break;
+                        }
                     }
                 }
-                bestStacks.add(SOLOnion.CONFIG.getDiversity(context.getPlayer(), stack), i);
+                
+                bestStacks.add(SOLOnion.CONFIG.getDiversity(context.getPlayer(), resource.toStack(handler.getAmountAsInt(i))), i);
             }
         }
         
         bestStacks.sort(Comparator.comparingDouble(x -> x.key));
         
         for (int slot : bestStacks.values()) {
-            var stack = handler.extractItem(slot, handler.getStackInSlot(slot).getCount(), false);
-            var result = ItemHandlerHelper.insertItem(inv, stack, false);
-            if (!result.isEmpty()) {
-                handler.insertItem(slot, result, false);
-                break;
+            try (var tx = Transaction.open(null)) {
+                var resource = handler.getResource(slot);
+                var stack = handler.extract(slot, resource, handler.getAmountAsInt(slot), tx);
+                stack -= inv.insert(resource, stack, tx);
+                if (stack > 0) {
+                    handler.insert(resource, stack, tx);
+                    break;
+                }
+                tx.commit();
             }
         }
         
-        List<ItemStack> stacks = new ArrayList<>(inv.getSlots());
-        for (int i = 0; i < inv.getSlots(); i++)
-            stacks.add(inv.getStackInSlot(i));
-        context.getItemInHand().set(DataComponents.CONTAINER, ItemContainerContents.fromItems(stacks));
+        context.getItemInHand().set(DataComponents.CONTAINER, InventoryUtils.asContent(inv));
         
         return InteractionResult.SUCCESS;
     }
     
     @Override
     public InteractionResult use(Level world, Player player, InteractionHand hand) {
-        if (!world.isClientSide && player.isCrouching())
+        if (!world.isClientSide() && player.isCrouching())
             player.openMenu(new FoodContainerProvider(displayName), player.blockPosition());
         
         if (!player.isCrouching())
@@ -114,7 +124,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
     }
     
     private static boolean isInventoryEmpty(Player player, ItemStack container) {
-        ItemStackHandler handler = getInventory(container);
+        ItemContainerContents handler = getInventory(container);
         if (handler == null)
             return true;
         
@@ -133,13 +143,23 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
     }
     
     @Nullable
-    public static ItemStackHandler getInventory(ItemStack bag) {
-        return (ItemStackHandler) bag.getCapability(Capabilities.ItemHandler.ITEM);
+    public static ItemContainerContents getInventory(ItemStack bag) {
+        if (bag.getItem() instanceof FoodContainerItem item) {
+            if (bag.has(DataComponents.CONTAINER))
+                return bag.get(DataComponents.CONTAINER);
+            List<ItemStack> stacks = new ArrayList<>(item.nslots);
+            for (int i = 0; i < item.nslots; i++)
+                stacks.add(ItemStack.EMPTY);
+            ItemContainerContents contents = ItemContainerContents.fromItems(stacks);
+            bag.set(DataComponents.CONTAINER, contents);
+            return contents;
+        }
+        return null;
     }
     
     @Override
     public ItemStack getActualFood(Player player, ItemStack stack) {
-        ItemStackHandler handler = getInventory(stack);
+        ItemContainerContents handler = getInventory(stack);
         if (handler == null)
             return ItemStack.EMPTY;
         
@@ -155,7 +175,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
             return stack;
         
         Player player = (Player) entity;
-        ItemStackHandler handler = getInventory(stack);
+        ItemContainerContents handler = getInventory(stack);
         if (handler == null)
             return stack;
         
@@ -163,13 +183,16 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         if (bestFoodSlot < 0)
             return stack;
         
+        NonNullList<ItemStack> newInventory = NonNullList.withSize(handler.getSlots(), ItemStack.EMPTY);
+        handler.copyInto(newInventory);
         ItemStack bestFood = handler.getStackInSlot(bestFoodSlot);
         ItemStack foodCopy = bestFood.copy();
         if (bestFood.get(DataComponents.FOOD) != null && !bestFood.isEmpty() && OriginsManager.isEdible(player, foodCopy)) {
             ItemStack result = bestFood.finishUsingItem(world, entity);
+            newInventory.set(bestFoodSlot, result);
             // put bowls/bottles etc. into player inventory
             if (result.get(DataComponents.FOOD) == null) {
-                handler.setStackInSlot(bestFoodSlot, ItemStack.EMPTY);
+                newInventory.set(bestFoodSlot, ItemStack.EMPTY);
                 Player playerEntity = (Player) entity;
                 
                 if (!playerEntity.getInventory().add(result))
@@ -177,12 +200,9 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
                 
             }
             
-            List<ItemStack> stacks = new ArrayList<>(handler.getSlots());
-            for (int i = 0; i < handler.getSlots(); i++)
-                stacks.add(handler.getStackInSlot(i));
-            stack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(stacks));
+            stack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(newInventory));
             
-            if (!world.isClientSide)
+            if (!world.isClientSide())
                 EventHooks.onItemUseFinish(player, foodCopy, 0, result);
         }
         
@@ -194,7 +214,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         return 32;
     }
     
-    public static int getBestFoodSlot(ItemStackHandler handler, Player player) {
+    public static int getBestFoodSlot(ItemContainerContents handler, Player player) {
         FoodPlayerData foodList = SOLOnionAPI.getFoodCapability(player);
         
         double maxDiversity = -Double.MAX_VALUE;

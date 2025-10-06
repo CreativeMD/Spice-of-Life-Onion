@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import team.creative.solonion.common.SOLOnion;
 import team.creative.solonion.common.item.foodcontainer.FoodContainer;
 
@@ -30,18 +31,18 @@ public class FoodContainerScreen extends AbstractContainerScreen<FoodContainer> 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int x, int y) {
         this.drawBackground(graphics, ResourceLocation.tryBuild(SOLOnion.MODID, "textures/gui/inventory.png"));
-        var h = this.menu.containerItem.getCapability(Capabilities.ItemHandler.ITEM);
+        var h = menu.containerItem.getCapability(Capabilities.Item.ITEM, ItemAccess.forStack(menu.containerItem));
         if (h != null) {
-            int slotsPerRow = h.getSlots();
-            if (h.getSlots() > 9) {
-                slotsPerRow = h.getSlots() / 2;
+            int slotsPerRow = h.size();
+            if (h.size() > 9) {
+                slotsPerRow = h.size() / 2;
             }
             int xStart = (2 * 8 + 9 * 18 - slotsPerRow * 18) / 2;
             int yStart = 17 + 18;
-            if (h.getSlots() > 9) {
+            if (h.size() > 9) {
                 yStart = 17 + (84 - 36 - 23) / 2;
             }
-            for (int i = 0; i < h.getSlots(); i++) {
+            for (int i = 0; i < h.size(); i++) {
                 int row = i / slotsPerRow;
                 int col = i % slotsPerRow;
                 int xPos = xStart - 1 + col * 18;

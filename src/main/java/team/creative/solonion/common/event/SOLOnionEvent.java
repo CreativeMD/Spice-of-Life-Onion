@@ -44,7 +44,7 @@ public class SOLOnionEvent {
     }
     
     private void updateBenefits(Player player) {
-        if (player.level().isClientSide)
+        if (player.level().isClientSide())
             return;
         
         FoodPlayerData foodList = SOLOnionAPI.getFoodCapability(player);
@@ -112,7 +112,7 @@ public class SOLOnionEvent {
     }
     
     public void syncFoodList(Player player) {
-        if (player.level().isClientSide)
+        if (player.level().isClientSide())
             return;
         
         SOLOnion.NETWORK.sendToClient(new FoodListMessage(player.registryAccess(), SOLOnionAPI.getFoodCapability(player)), (ServerPlayer) player);
@@ -153,7 +153,7 @@ public class SOLOnionEvent {
             eatenItem = BuiltInRegistries.ITEM.getValue(ResourceLocation.tryBuild("farmersdelight", "cake_slice"));
         ItemStack eatenItemStack = new ItemStack(eatenItem);
         
-        if (clickedBlock == Blocks.CAKE && player.canEat(false) && event.getHand() == InteractionHand.MAIN_HAND && !event.getLevel().isClientSide) {
+        if (clickedBlock == Blocks.CAKE && player.canEat(false) && event.getHand() == InteractionHand.MAIN_HAND && !event.getLevel().isClientSide()) {
             // Fire an event instead of directly updating the food list, so that
             // SoL: Carrot Edition registers the eaten food too.
             EventHooks.onItemUseFinish(player, eatenItemStack, 0, ItemStack.EMPTY);
