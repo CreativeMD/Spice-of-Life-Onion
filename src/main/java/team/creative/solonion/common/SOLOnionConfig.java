@@ -89,6 +89,12 @@ public final class SOLOnionConfig implements ICreativeConfig {
     public boolean trackedFoodDiversityDecay = true;
     
     @CreativeConfig
+    public boolean disableDiversityCalculations = false;
+    
+    @CreativeConfig
+    public double disabledDefaultDiversity = 1;
+    
+    @CreativeConfig
     public List<FoodProperty> foodDiversity = Arrays.asList(new FoodProperty(new CreativeIngredientItem(Items.GOLDEN_CARROT), 2),
         new FoodProperty(new CreativeIngredientItem(Items.GOLDEN_APPLE), 2), new FoodProperty(new CreativeIngredientItem(Items.ENCHANTED_GOLDEN_APPLE), 5));
     
@@ -143,6 +149,8 @@ public final class SOLOnionConfig implements ICreativeConfig {
                 return property.diversity;
         FoodProperties prop = food.get(DataComponents.FOOD);
         if (prop != null) {
+            if (disableDiversityCalculations)
+                return disabledDefaultDiversity;
             double diversity = (prop.nutrition() / complexityStandardNutrition) * (prop.saturation() / complexityStandardSaturation);
             var consum = food.get(DataComponents.CONSUMABLE);
             if (consum != null && consum.animation() == ItemUseAnimation.EAT)
