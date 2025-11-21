@@ -1,3 +1,6 @@
+1.5.3
+Added disableDiversityCalculations and disabledDefaultDiversity option to allow an easy way to overwrite the diversity for all food items
+
 1.5.2
 Fixed button in inventory screen being out of place when opening/ closing recipe book
 
