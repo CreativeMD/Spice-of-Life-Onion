@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -83,7 +83,7 @@ public abstract class BenefitType<T extends Benefit, L, A> {
     
     public abstract void loadValue(T value, GuiParent parent, IGuiConfigParent configParent);
     
-    public abstract T saveValue(ResourceLocation location, double value, GuiParent parent, IGuiConfigParent configParent);
+    public abstract T saveValue(Identifier identifier, double value, GuiParent parent, IGuiConfigParent configParent);
     
     public abstract L createStack();
     

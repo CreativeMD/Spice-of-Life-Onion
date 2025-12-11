@@ -13,7 +13,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
@@ -28,12 +28,12 @@ import team.creative.solonion.api.SOLOnionAPI;
 
 public class BenefitMobEffect extends Benefit<MobEffect> {
     
-    public BenefitMobEffect(ResourceLocation location, double value) {
-        super(new RegistryObjectConfig<>(BuiltInRegistries.MOB_EFFECT, location), value);
+    public BenefitMobEffect(Identifier identifier, double value) {
+        super(new RegistryObjectConfig<>(BuiltInRegistries.MOB_EFFECT, identifier), value);
     }
     
     public BenefitMobEffect(Holder<MobEffect> holder, double value) {
-        this(holder.unwrapKey().get().location(), value);
+        this(holder.unwrapKey().get().identifier(), value);
     }
     
     public BenefitMobEffect(CompoundTag nbt) {
@@ -67,8 +67,8 @@ public class BenefitMobEffect extends Benefit<MobEffect> {
         public void loadValue(BenefitMobEffect value, GuiParent parent, IGuiConfigParent configParent) {}
         
         @Override
-        public BenefitMobEffect saveValue(ResourceLocation location, double value, GuiParent parent, IGuiConfigParent configParent) {
-            return new BenefitMobEffect(location, value);
+        public BenefitMobEffect saveValue(Identifier identifier, double value, GuiParent parent, IGuiConfigParent configParent) {
+            return new BenefitMobEffect(identifier, value);
         }
         
         @Override

@@ -11,7 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.util.mc.LanguageUtils;
@@ -29,7 +29,7 @@ import team.creative.solonion.common.SOLOnion;
 import team.creative.solonion.common.benefit.BenefitThreshold;
 
 public final class FoodBookScreen extends Screen implements PageFlipButton.Pageable {
-    private static final ResourceLocation texture = ResourceLocation.tryBuild(SOLOnion.MODID, "textures/gui/food_book.png");
+    private static final Identifier texture = Identifier.tryBuild(SOLOnion.MODID, "textures/gui/food_book.png");
     private static final UIImage.Image bookImage = new UIImage.Image(texture, new Rectangle(0, 0, 186, 192));
     public static final UIImage.Image carrotImage = new UIImage.Image(texture, new Rectangle(0, 240, 16, 16));
     

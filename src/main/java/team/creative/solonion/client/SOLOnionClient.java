@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +34,7 @@ import team.creative.solonion.common.item.SOLOnionItems;
 
 public class SOLOnionClient {
     
-    public static final KeyMapping.Category SOL_CATEGORY = new KeyMapping.Category(ResourceLocation.fromNamespaceAndPath(SOLOnion.MODID, "category"));
+    public static final KeyMapping.Category SOL_CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath(SOLOnion.MODID, "category"));
     public static final KeyMapping OPEN_FOOD_BOOK = new KeyMapping("key.solonion.open_food_book", InputConstants.UNKNOWN.getValue(), SOL_CATEGORY);
     
     public static void load(IEventBus bus) {

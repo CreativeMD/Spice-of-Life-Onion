@@ -14,6 +14,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.fml.ModList;
 import team.creative.solonion.api.SOLOnionAPI;
@@ -35,8 +36,8 @@ public final class FoodListCommand {
     
     public static ArgumentBuilder<CommandSourceStack, ?> withPlayerArgumentOrSender(ArgumentBuilder<CommandSourceStack, ?> base, CommandWithPlayer command) {
         String target = "target";
-        return base.executes((context) -> command.run(context, context.getSource().getPlayerOrException())).then(argument(target, EntityArgument.player()).executes(
-            (context) -> command.run(context, EntityArgument.getPlayer(context, target))));
+        return base.executes((context) -> command.run(context, context.getSource().getPlayerOrException())).then(argument(target, EntityArgument.player()).executes((
+                context) -> command.run(context, EntityArgument.getPlayer(context, target))));
     }
     
     public static ArgumentBuilder<CommandSourceStack, ?> withNoArgument(ArgumentBuilder<CommandSourceStack, ?> base, CommandWithoutArgs command) {
@@ -44,7 +45,7 @@ public final class FoodListCommand {
     }
     
     public static int displayDiversity(CommandContext<CommandSourceStack> context, Player target) {
-        boolean isOp = context.getSource().hasPermission(2);
+        boolean isOp = context.getSource().permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
         boolean isTargetingSelf = isTargetingSelf(context, target);
         if (!isOp && !isTargetingSelf) {
             context.getSource().sendFailure(localizedComponent("no_permissions"));
@@ -66,7 +67,7 @@ public final class FoodListCommand {
     }
     
     public static int clearFoodList(CommandContext<CommandSourceStack> context, Player target) {
-        boolean isOp = context.getSource().hasPermission(2);
+        boolean isOp = context.getSource().permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
         boolean isTargetingSelf = isTargetingSelf(context, target);
         if (!isOp && !isTargetingSelf) {
             context.getSource().sendFailure(localizedComponent("no_permissions"));
@@ -87,7 +88,7 @@ public final class FoodListCommand {
     }
     
     public static int resetPlayerOrigin(CommandContext<CommandSourceStack> context, Player target) {
-        boolean isOp = context.getSource().hasPermission(2);
+        boolean isOp = context.getSource().permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
         boolean isTargetingSelf = isTargetingSelf(context, target);
         if (!isOp && !isTargetingSelf) {
             context.getSource().sendFailure(localizedComponent("no_permissions"));
@@ -111,7 +112,7 @@ public final class FoodListCommand {
     }
     
     public static int resetAllOrigins(CommandContext<CommandSourceStack> context) {
-        boolean isOp = context.getSource().hasPermission(2);
+        boolean isOp = context.getSource().permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
         if (!isOp) {
             context.getSource().sendFailure(localizedComponent("no_permissions"));
             return -1;

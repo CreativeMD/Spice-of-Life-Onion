@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -37,7 +37,7 @@ public final class SOLOnion {
     
     public static final String MODID = "solonion";
     public static final Logger LOGGER = LogManager.getLogger(MODID);
-    public static CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, ResourceLocation.tryBuild(SOLOnion.MODID, "main"));
+    public static CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, Identifier.tryBuild(SOLOnion.MODID, "main"));
     public static SOLOnionConfig CONFIG;
     public static SOLOnionEvent EVENT;
     

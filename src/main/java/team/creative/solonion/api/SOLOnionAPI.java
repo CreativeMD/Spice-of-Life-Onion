@@ -2,7 +2,7 @@ package team.creative.solonion.api;
 
 import java.util.function.Supplier;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -15,9 +15,9 @@ public final class SOLOnionAPI {
     
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, SOLOnion.MODID);
     
-    public static final ResourceLocation FOOD = ResourceLocation.tryBuild(SOLOnion.MODID, "foodlist");
-    public static final ResourceLocation BENEFIT = ResourceLocation.tryBuild(SOLOnion.MODID, "benefit");
-    public static final ResourceLocation FOODCONTAINER = ResourceLocation.tryBuild(SOLOnion.MODID, "food_container");
+    public static final Identifier FOOD = Identifier.tryBuild(SOLOnion.MODID, "foodlist");
+    public static final Identifier BENEFIT = Identifier.tryBuild(SOLOnion.MODID, "benefit");
+    public static final Identifier FOODCONTAINER = Identifier.tryBuild(SOLOnion.MODID, "food_container");
     
     public static final Supplier<AttachmentType<FoodPlayerDataImpl>> FOOD_DATA = ATTACHMENT_TYPES.register(FOOD.getPath(), () -> AttachmentType.serializable(
         () -> new FoodPlayerDataImpl()).build());

@@ -4,7 +4,7 @@ import java.awt.Rectangle;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class UIImage extends UIElement {
     public Image image;
@@ -27,16 +27,16 @@ public class UIImage extends UIElement {
         int imageWidth = image.partOfTexture.width;
         int imageHeight = image.partOfTexture.height;
         
-        graphics.blit(RenderPipelines.GUI_TEXTURED, image.textureLocation, frame.x + (int) Math.floor((frame.width - imageWidth) / 2d), frame.y + (int) Math.floor(
+        graphics.blit(RenderPipelines.GUI_TEXTURED, image.identifier, frame.x + (int) Math.floor((frame.width - imageWidth) / 2d), frame.y + (int) Math.floor(
             (frame.height - imageHeight) / 2d), image.partOfTexture.x, image.partOfTexture.y, imageWidth, imageHeight, 256, 256);
     }
     
     public static class Image {
-        public final ResourceLocation textureLocation;
+        public final Identifier identifier;
         public final Rectangle partOfTexture;
         
-        public Image(ResourceLocation textureLocation, Rectangle partOfTexture) {
-            this.textureLocation = textureLocation;
+        public Image(Identifier identifier, Rectangle partOfTexture) {
+            this.identifier = identifier;
             this.partOfTexture = partOfTexture;
         }
     }

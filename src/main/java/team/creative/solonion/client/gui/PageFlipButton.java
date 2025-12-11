@@ -6,13 +6,13 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.solonion.common.SOLOnion;
 
 public final class PageFlipButton extends Button {
     
-    private static final ResourceLocation texture = ResourceLocation.tryBuild(SOLOnion.MODID, "textures/gui/food_book.png");
+    private static final Identifier texture = Identifier.tryBuild(SOLOnion.MODID, "textures/gui/food_book.png");
     public static final int width = 23;
     public static final int height = 13;
     
@@ -27,7 +27,7 @@ public final class PageFlipButton extends Button {
     }
     
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         if (!visible)
             return;
         

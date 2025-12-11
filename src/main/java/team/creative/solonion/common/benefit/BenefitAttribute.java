@@ -14,7 +14,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
@@ -34,17 +34,17 @@ public class BenefitAttribute extends Benefit<Attribute> {
     
     public final Operation operation;
     
-    public BenefitAttribute(ResourceLocation location, double value, Operation op) {
+    public BenefitAttribute(Identifier location, double value, Operation op) {
         super(new RegistryObjectConfig<>(BuiltInRegistries.ATTRIBUTE, location), value);
         this.operation = op;
     }
     
     public BenefitAttribute(Holder<Attribute> holder, double value, Operation op) {
-        this(holder.unwrapKey().get().location(), value);
+        this(holder.unwrapKey().get().identifier(), value);
     }
     
-    public BenefitAttribute(ResourceLocation location, double value) {
-        this(location, value, Operation.ADD_VALUE);
+    public BenefitAttribute(Identifier identifier, double value) {
+        this(identifier, value, Operation.ADD_VALUE);
     }
     
     public BenefitAttribute(Holder<Attribute> holder, double value) {
@@ -94,9 +94,9 @@ public class BenefitAttribute extends Benefit<Attribute> {
         }
         
         @Override
-        public BenefitAttribute saveValue(ResourceLocation location, double value, GuiParent parent, IGuiConfigParent configParent) {
+        public BenefitAttribute saveValue(Identifier identifier, double value, GuiParent parent, IGuiConfigParent configParent) {
             GuiStateButton<Operation> op = parent.get("operation");
-            return new BenefitAttribute(location, value, op.selected());
+            return new BenefitAttribute(identifier, value, op.selected());
         }
         
         @Override
@@ -143,7 +143,7 @@ public class BenefitAttribute extends Benefit<Attribute> {
             var list = input.childrenList(getId());
             if (list.isPresent())
                 list.get().forEach(child -> {
-                    Reference<Attribute> att = BuiltInRegistries.ATTRIBUTE.get(ResourceLocation.parse(child.getStringOr("att", ""))).get();
+                    Reference<Attribute> att = BuiltInRegistries.ATTRIBUTE.get(Identifier.parse(child.getStringOr("att", ""))).get();
                     if (att != null)
                         applied.put(new AttributeHolder(att, Operation.BY_ID.apply(child.getIntOr("op", 0))), child.read("mod", AttributeModifier.CODEC).orElseThrow());
                 });
@@ -161,11 +161,11 @@ public class BenefitAttribute extends Benefit<Attribute> {
             
             if (stack != null)
                 for (var entry : stack.object2DoubleEntrySet()) {
-                    var location = ResourceLocation.tryBuild(SOLOnion.MODID, entry.getKey().operation.toString().toLowerCase());
+                    var identifier = Identifier.tryBuild(SOLOnion.MODID, entry.getKey().operation.toString().toLowerCase());
                     var att = player.getAttribute(entry.getKey().attribute);
                     
-                    att.removeModifier(location); // make sure modifier does not exist already
-                    var modi = new AttributeModifier(location, entry.getDoubleValue(), entry.getKey().operation);
+                    att.removeModifier(identifier); // make sure modifier does not exist already
+                    var modi = new AttributeModifier(identifier, entry.getDoubleValue(), entry.getKey().operation);
                     if (att != null) {
                         
                         att.addPermanentModifier(modi);

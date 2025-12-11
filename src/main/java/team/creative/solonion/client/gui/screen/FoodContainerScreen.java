@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -30,7 +30,7 @@ public class FoodContainerScreen extends AbstractContainerScreen<FoodContainer> 
     
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int x, int y) {
-        this.drawBackground(graphics, ResourceLocation.tryBuild(SOLOnion.MODID, "textures/gui/inventory.png"));
+        this.drawBackground(graphics, Identifier.tryBuild(SOLOnion.MODID, "textures/gui/inventory.png"));
         var h = menu.containerItem.getCapability(Capabilities.Item.ITEM, ItemAccess.forStack(menu.containerItem));
         if (h != null) {
             int slotsPerRow = h.size();
@@ -53,17 +53,17 @@ public class FoodContainerScreen extends AbstractContainerScreen<FoodContainer> 
         }
     }
     
-    protected void drawBackground(GuiGraphics graphics, ResourceLocation gui) {
+    protected void drawBackground(GuiGraphics graphics, Identifier gui) {
         int relX = (this.width - this.getXSize()) / 2;
         int relY = (this.height - this.getYSize()) / 2;
         graphics.blit(RenderPipelines.GUI_TEXTURED, gui, relX, relY, 0, 0, this.getXSize(), this.getYSize(), 256, 256);
     }
     
-    protected void drawSlot(GuiGraphics graphics, int x, int y, ResourceLocation texture, int size) {
+    protected void drawSlot(GuiGraphics graphics, int x, int y, Identifier texture, int size) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, texture, this.getGuiLeft() + x, this.getGuiTop() + y, 0, 0, size, size, size, size);
     }
     
     protected void drawSlot(GuiGraphics graphics, int x, int y) {
-        drawSlot(graphics, x, y, ResourceLocation.tryBuild(SOLOnion.MODID, "textures/gui/slot.png"), 18);
+        drawSlot(graphics, x, y, Identifier.tryBuild(SOLOnion.MODID, "textures/gui/slot.png"), 18);
     }
 }

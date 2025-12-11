@@ -10,7 +10,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
@@ -38,8 +38,8 @@ public abstract class Benefit<T> {
                 if (element.isJsonObject()) {
                     JsonObject object = element.getAsJsonObject();
                     if (object.has("attribute"))
-                        return new BenefitAttribute(ResourceLocation.parse(object.get("attribute").getAsString()), object.get("value").getAsDouble());
-                    return new BenefitMobEffect(ResourceLocation.parse(object.get("effect").getAsString()), object.get("value").getAsDouble());
+                        return new BenefitAttribute(Identifier.parse(object.get("attribute").getAsString()), object.get("value").getAsDouble());
+                    return new BenefitMobEffect(Identifier.parse(object.get("effect").getAsString()), object.get("value").getAsDouble());
                 } else if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
                     try {
                         return BenefitType.load(TagParser.parseCompoundFully(element.getAsString()));
@@ -62,15 +62,15 @@ public abstract class Benefit<T> {
                     
                     @Override
                     public void raiseEvent(GuiEvent event) {
-                        GuiComboBox<ResourceLocation> box = (GuiComboBox<ResourceLocation>) parent.get("elements");
+                        GuiComboBox<Identifier> box = (GuiComboBox<Identifier>) parent.get("elements");
                         Registry registry = selected().registry();
                         GuiParent subConfig = parent.get("subConfig");
                         if (subConfig == null)
                             return;
                         subConfig.clear();
                         selected().createControls(subConfig, configParent);
-                        box.set(new TextMapBuilder<ResourceLocation>().addComponent(registry.keySet(), value -> {
-                            if (value.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
+                        box.set(new TextMapBuilder<Identifier>().addComponent(registry.keySet(), value -> {
+                            if (value.getNamespace().equals(Identifier.DEFAULT_NAMESPACE))
                                 return Component.literal(value.getPath());
                             return Component.literal(value.toString());
                         }));
@@ -79,7 +79,7 @@ public abstract class Benefit<T> {
                     }
                     
                 });
-                parent.add(new GuiComboBox<ResourceLocation>(parent, "elements", new TextMapBuilder<ResourceLocation>()).setSearchbar(true));
+                parent.add(new GuiComboBox<Identifier>(parent, "elements", new TextMapBuilder<Identifier>()).setSearchbar(true));
                 parent.add(new GuiTextfield(parent, "value").setFloatOnly().setDim(20, 6));
                 parent.add(new GuiParent(parent, "subConfig"));
             }
@@ -90,8 +90,8 @@ public abstract class Benefit<T> {
                 state.select(BenefitType.getType(value));
                 state.raiseEvent(new GuiControlChangedEvent(state));
                 
-                GuiComboBox<ResourceLocation> box = (GuiComboBox<ResourceLocation>) parent.get("elements");
-                box.select(value.property.location);
+                GuiComboBox<Identifier> box = (GuiComboBox<Identifier>) parent.get("elements");
+                box.select(value.property.identifier);
                 
                 GuiTextfield text = parent.get("value");
                 text.setText(value.value + "");
@@ -103,7 +103,7 @@ public abstract class Benefit<T> {
             @Override
             protected Benefit saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 GuiStateButton<BenefitType> state = parent.get("state");
-                GuiComboBox<ResourceLocation> box = (GuiComboBox<ResourceLocation>) parent.get("elements");
+                GuiComboBox<Identifier> box = (GuiComboBox<Identifier>) parent.get("elements");
                 GuiTextfield text = parent.get("value");
                 return state.selected().saveValue(box.selected(), text.parseDouble(), parent.get("subConfig"), configParent);
             }
@@ -126,7 +126,7 @@ public abstract class Benefit<T> {
     }
     
     public Benefit(Registry<T> registry, CompoundTag nbt) {
-        this.property = new RegistryObjectConfig<>(registry, ResourceLocation.tryParse(nbt.getStringOr("key", "")));
+        this.property = new RegistryObjectConfig<>(registry, Identifier.tryParse(nbt.getStringOr("key", "")));
         this.value = nbt.getDoubleOr("val", 0);
     }
     
@@ -140,7 +140,7 @@ public abstract class Benefit<T> {
     public CompoundTag save() {
         CompoundTag nbt = new CompoundTag();
         nbt.putString("type", BenefitType.getId(this));
-        nbt.putString("key", property.location.toString());
+        nbt.putString("key", property.identifier.toString());
         nbt.putDouble("val", value);
         return nbt;
     }

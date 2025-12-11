@@ -10,7 +10,7 @@ import team.creative.solonion.api.SOLOnionAPI;
 import team.creative.solonion.client.gui.screen.FoodBookScreen;
 import team.creative.solonion.common.SOLOnion;
 
-public class UIInventoryButton extends Button {
+public class UIInventoryButton extends Button.Plain {
     
     private final AbstractContainerScreen screen;
     
