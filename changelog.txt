@@ -1,3 +1,6 @@
+1.5.4
+Made duration of lunchbag, launchbox and golden launchbox depend on the food you eat
+
 1.5.3
 Added disableDiversityCalculations and disabledDefaultDiversity option to allow an easy way to overwrite the diversity for all food items
 
