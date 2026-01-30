@@ -211,7 +211,14 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
     
     @Override
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
-        return 32;
+        ItemContainerContents handler = getInventory(stack);
+        if (handler == null || !(entity instanceof Player))
+            return 32;
+        
+        int bestFoodSlot = getBestFoodSlot(handler, (Player) entity);
+        if (bestFoodSlot < 0)
+            return 32;
+        return handler.getStackInSlot(bestFoodSlot).getUseDuration(entity);
     }
     
     public static int getBestFoodSlot(ItemContainerContents handler, Player player) {
