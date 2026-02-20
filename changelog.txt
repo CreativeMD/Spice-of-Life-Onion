@@ -1,3 +1,6 @@
+1.5.5
+Added bundle like functionality for food containers. Items can be inserted or extracted in inventory (suggested by @ZakoFish)
+
 1.5.4
 Made duration of lunchbag, launchbox and golden launchbox depend on the food you eat
 
