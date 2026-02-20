@@ -73,7 +73,6 @@ public class FoodContainer extends AbstractContainerMenu {
                         stacks.add(itemHandler.getStackInSlot(i));
                     containerItem.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(stacks));
                 }
-                
             }
             
             @Override
