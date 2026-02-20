@@ -5,10 +5,6 @@
  */
 package team.creative.solonion.common.item.foodcontainer;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -17,7 +13,6 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import team.creative.solonion.common.item.SOLOnionItems;
@@ -73,13 +68,8 @@ public class FoodContainer extends AbstractContainerMenu {
             
             @Override
             public void slotChanged(AbstractContainerMenu menu, int slot, ItemStack stack) {
-                if (slot < container.getContainerSize()) {
-                    List<ItemStack> stacks = new ArrayList<>(container.getContainerSize());
-                    for (int i = 0; i < container.getContainerSize(); i++)
-                        stacks.add(container.getItem(i));
-                    containerItem.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(stacks));
-                }
-                
+                if (slot < container.getContainerSize())
+                    FoodContainerItem.setContainer(containerItem, container);
             }
             
             @Override
