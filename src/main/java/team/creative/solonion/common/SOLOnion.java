@@ -66,7 +66,7 @@ public final class SOLOnion {
     
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerItem(Capabilities.Item.ITEM, (itemStack, context) -> {
-            List<ItemStack> list = new ArrayList<>(FoodContainerItem.getInventory(itemStack).stream().toList());
+            List<ItemStack> list = new ArrayList<>(FoodContainerItem.getInventory(itemStack).allItemsCopyStream().toList());
             int size = ((FoodContainerItem) itemStack.getItem()).nslots;
             while (list.size() < size)
                 list.add(ItemStack.EMPTY);

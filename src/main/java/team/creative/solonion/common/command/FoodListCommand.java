@@ -80,9 +80,8 @@ public final class FoodListCommand {
         
         MutableComponent feedback = localizedComponent("clear.success");
         sendFeedback(context.getSource(), feedback);
-        if (!isTargetingSelf) {
-            target.displayClientMessage(applyFeedbackStyle(feedback), true);
-        }
+        if (!isTargetingSelf)
+            target.sendOverlayMessage(applyFeedbackStyle(feedback));
         
         return Command.SINGLE_SUCCESS;
     }
@@ -104,9 +103,8 @@ public final class FoodListCommand {
             feedback = localizedComponent("origin.inapplicable");
         }
         sendFeedback(context.getSource(), feedback);
-        if (!isTargetingSelf) {
-            target.displayClientMessage(applyFeedbackStyle(feedback), true);
-        }
+        if (!isTargetingSelf)
+            target.sendOverlayMessage(applyFeedbackStyle(feedback));
         
         return Command.SINGLE_SUCCESS;
     }

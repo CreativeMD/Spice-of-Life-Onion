@@ -3,7 +3,7 @@ package team.creative.solonion.client.gui.elements;
 import java.awt.Color;
 import java.awt.Rectangle;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class UIBox extends UIElement {
     public static UIBox horizontalLine(int minX, int maxX, int y, Color color) {
@@ -23,7 +23,7 @@ public class UIBox extends UIElement {
     }
     
     @Override
-    protected void render(GuiGraphics graphics) {
+    protected void render(GuiGraphicsExtractor graphics) {
         super.render(graphics);
         
         graphics.fill(frame.x, frame.y, frame.x + frame.width, frame.y + frame.height, color.getRGB());

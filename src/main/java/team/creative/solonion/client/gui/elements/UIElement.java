@@ -11,18 +11,18 @@ import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class UIElement {
-    public static void render(GuiGraphics graphics, UIElement element, int mouseX, int mouseY) {
+    public static void render(GuiGraphicsExtractor graphics, UIElement element, int mouseX, int mouseY) {
         render(graphics, singletonList(element), mouseX, mouseY);
     }
     
-    public static void render(GuiGraphics graphics, List<UIElement> elements, int mouseX, int mouseY) {
+    public static void render(GuiGraphicsExtractor graphics, List<UIElement> elements, int mouseX, int mouseY) {
         elements.forEach(element -> element.render(graphics));
         
         elements.stream().flatMap(UIElement::getRecursiveChildren).filter(element -> element.hasTooltip() && element.frame.contains(mouseX, mouseY)).reduce((one, two) -> two) // last element was rendered last and is thus visually on top
@@ -41,7 +41,7 @@ public abstract class UIElement {
     }
     
     /** Renders the element to the screen. Note that no transforms have been applied, so you should take your position into account! */
-    protected void render(GuiGraphics graphics) {
+    protected void render(GuiGraphicsExtractor graphics) {
         children.forEach(child -> child.render(graphics));
         
     }
@@ -61,12 +61,11 @@ public abstract class UIElement {
      *            the mouse's x position
      * @param mouseY
      *            the mouse's y position */
-    protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         if (tooltip == null)
             return;
         
-        graphics.renderTooltip(mc.font, List.of(ClientTooltipComponent.create(Component.literal(tooltip).getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE,
-            null);
+        graphics.tooltip(mc.font, List.of(ClientTooltipComponent.create(Component.literal(tooltip).getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
     }
     
     /** Renders a tooltip at the given position.
@@ -79,10 +78,10 @@ public abstract class UIElement {
      *            the mouse's x position
      * @param mouseY
      *            the mouse's y position */
-    protected final void renderTooltip(GuiGraphics graphics, ItemStack itemStack, List<Component> tooltip, int mouseX, int mouseY) {
+    protected final void renderTooltip(GuiGraphicsExtractor graphics, ItemStack itemStack, List<Component> tooltip, int mouseX, int mouseY) {
         assert mc.screen != null;
         
-        graphics.renderTooltip(mc.font, tooltip.stream().map(x -> ClientTooltipComponent.create(x.getVisualOrderText())).collect(Collectors.toList()), mouseX, mouseY,
+        graphics.tooltip(mc.font, tooltip.stream().map(x -> ClientTooltipComponent.create(x.getVisualOrderText())).collect(Collectors.toList()), mouseX, mouseY,
             DefaultTooltipPositioner.INSTANCE, null);
     }
     

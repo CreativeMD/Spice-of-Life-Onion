@@ -5,7 +5,7 @@
  */
 package team.creative.solonion.client.gui.screen;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -22,14 +22,14 @@ public class FoodContainerScreen extends AbstractContainerScreen<FoodContainer> 
     }
     
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(graphics, mouseX, mouseY, partialTicks);
-        super.render(graphics, mouseX, mouseY, partialTicks);
-        this.renderTooltip(graphics, mouseX, mouseY);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        this.extractBackground(graphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+        this.extractTooltip(graphics, mouseX, mouseY);
     }
     
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int x, int y) {
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         this.drawBackground(graphics, Identifier.tryBuild(SOLOnion.MODID, "textures/gui/inventory.png"));
         var h = menu.containerItem.getCapability(Capabilities.Item.ITEM, ItemAccess.forStack(menu.containerItem));
         if (h != null) {
@@ -53,17 +53,17 @@ public class FoodContainerScreen extends AbstractContainerScreen<FoodContainer> 
         }
     }
     
-    protected void drawBackground(GuiGraphics graphics, Identifier gui) {
+    protected void drawBackground(GuiGraphicsExtractor graphics, Identifier gui) {
         int relX = (this.width - this.getXSize()) / 2;
         int relY = (this.height - this.getYSize()) / 2;
         graphics.blit(RenderPipelines.GUI_TEXTURED, gui, relX, relY, 0, 0, this.getXSize(), this.getYSize(), 256, 256);
     }
     
-    protected void drawSlot(GuiGraphics graphics, int x, int y, Identifier texture, int size) {
+    protected void drawSlot(GuiGraphicsExtractor graphics, int x, int y, Identifier texture, int size) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, texture, this.getGuiLeft() + x, this.getGuiTop() + y, 0, 0, size, size, size, size);
     }
     
-    protected void drawSlot(GuiGraphics graphics, int x, int y) {
+    protected void drawSlot(GuiGraphicsExtractor graphics, int x, int y) {
         drawSlot(graphics, x, y, Identifier.tryBuild(SOLOnion.MODID, "textures/gui/slot.png"), 18);
     }
 }

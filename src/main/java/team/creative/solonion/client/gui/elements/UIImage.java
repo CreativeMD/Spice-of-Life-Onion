@@ -2,7 +2,7 @@ package team.creative.solonion.client.gui.elements;
 
 import java.awt.Rectangle;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
@@ -21,7 +21,7 @@ public class UIImage extends UIElement {
     }
     
     @Override
-    protected void render(GuiGraphics graphics) {
+    protected void render(GuiGraphicsExtractor graphics) {
         super.render(graphics);
         
         int imageWidth = image.partOfTexture.width;

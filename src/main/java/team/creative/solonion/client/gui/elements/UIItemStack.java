@@ -7,7 +7,7 @@ import java.awt.Rectangle;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
@@ -26,10 +26,10 @@ public class UIItemStack extends UIElement {
     }
     
     @Override
-    protected void render(GuiGraphics graphics) {
+    protected void render(GuiGraphicsExtractor graphics) {
         super.render(graphics);
         
-        graphics.renderItem(itemStack, frame.x + (frame.width - size) / 2, frame.y + (frame.height - size) / 2);
+        graphics.item(itemStack, frame.x + (frame.width - size) / 2, frame.y + (frame.height - size) / 2);
     }
     
     @Override
@@ -38,9 +38,9 @@ public class UIItemStack extends UIElement {
     }
     
     @Override
-    protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         List<Component> tooltip = itemStack.getTooltipLines(TooltipContext.of(mc.level), mc.player, mc.options.advancedItemTooltips ? ADVANCED : NORMAL);
-        graphics.renderTooltip(mc.font, tooltip.stream().map(x -> ClientTooltipComponent.create(x.getVisualOrderText())).collect(Collectors.toList()), mouseX, mouseY,
+        graphics.tooltip(mc.font, tooltip.stream().map(x -> ClientTooltipComponent.create(x.getVisualOrderText())).collect(Collectors.toList()), mouseX, mouseY,
             DefaultTooltipPositioner.INSTANCE, null);
     }
 }

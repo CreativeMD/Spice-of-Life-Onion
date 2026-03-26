@@ -8,7 +8,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -138,12 +138,12 @@ public final class FoodBookScreen extends Screen implements PageFlipButton.Pagea
     }
     
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         //renderBackground(graphics, mouseX, mouseY, partialTicks);
         
         UIElement.render(graphics, background, mouseX, mouseY);
         
-        super.render(graphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
         
         if (!pages.isEmpty()) { // might not be loaded yet; race condition
             // current page

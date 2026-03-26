@@ -3,7 +3,7 @@ package team.creative.solonion.client.gui.elements;
 import java.awt.Color;
 import java.awt.Rectangle;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class UILabel extends UIElement {
     public String text = "";
@@ -25,7 +25,7 @@ public class UILabel extends UIElement {
     }
     
     @Override
-    protected void render(GuiGraphics graphics) {
+    protected void render(GuiGraphicsExtractor graphics) {
         super.render(graphics);
         
         int textWidth = mc.font.width(text) - 1;
@@ -33,7 +33,7 @@ public class UILabel extends UIElement {
         int y = frame.y + (frame.height - 7) / 2;
         //if (color.getTransparency() == Color.TRANSLUCENT)
         //    RenderSystem.enableBlend();
-        graphics.drawString(mc.font, text, x, y, color.getRGB(), false);
+        graphics.text(mc.font, text, x, y, color.getRGB(), false);
     }
     
     enum TextAlignment {
