@@ -17,7 +17,7 @@ public class UIInventoryButton extends Button.Plain {
     public UIInventoryButton(AbstractContainerScreen screen) {
         super(screen.getGuiLeft() + SOLOnion.CONFIG.buttonInventoryX, screen
                 .getGuiTop() + SOLOnion.CONFIG.buttonInventoryY, SOLOnion.CONFIG.buttonInventoryWidth, SOLOnion.CONFIG.buttonInventoryHeight, Component.translatable(
-                    "gui.solonion.inventory.button"), (button) -> Minecraft.getInstance().setScreen(new FoodBookScreen(Minecraft.getInstance().player)), DEFAULT_NARRATION);
+                    "gui.solonion.inventory.button"), (button) -> Minecraft.getInstance().gui.setScreen(new FoodBookScreen(Minecraft.getInstance().player)), DEFAULT_NARRATION);
         setTooltip(Tooltip.create(Component.translatable("gui.solonion.inventory.tooltip", TooltipUtils.print(SOLOnionAPI.getFoodCapability(Minecraft.getInstance().player)
                 .foodDiversity(Minecraft.getInstance().player)))));
         this.screen = screen;

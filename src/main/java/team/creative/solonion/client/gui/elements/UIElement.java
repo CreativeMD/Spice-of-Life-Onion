@@ -79,7 +79,7 @@ public abstract class UIElement {
      * @param mouseY
      *            the mouse's y position */
     protected final void renderTooltip(GuiGraphicsExtractor graphics, ItemStack itemStack, List<Component> tooltip, int mouseX, int mouseY) {
-        assert mc.screen != null;
+        assert mc.gui.screen() != null;
         
         graphics.tooltip(mc.font, tooltip.stream().map(x -> ClientTooltipComponent.create(x.getVisualOrderText())).collect(Collectors.toList()), mouseX, mouseY,
             DefaultTooltipPositioner.INSTANCE, null);
