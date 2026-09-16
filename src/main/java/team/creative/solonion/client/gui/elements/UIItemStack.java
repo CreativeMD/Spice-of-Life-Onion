@@ -41,6 +41,6 @@ public class UIItemStack extends UIElement {
     protected void renderTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         List<Component> tooltip = itemStack.getTooltipLines(TooltipContext.of(mc.level), mc.player, mc.options.advancedItemTooltips ? ADVANCED : NORMAL);
         graphics.tooltip(mc.font, tooltip.stream().map(x -> ClientTooltipComponent.create(x.getVisualOrderText())).collect(Collectors.toList()), mouseX, mouseY,
-            DefaultTooltipPositioner.INSTANCE, null);
+            DefaultTooltipPositioner.INSTANCE, null, false);
     }
 }

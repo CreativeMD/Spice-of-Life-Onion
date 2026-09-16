@@ -1,6 +1,6 @@
 {
     "type": "minecraft:crafting_transmute",
-    "category": "equipment",
+    "group": "equipment",
     "input": "solonion:lunchbag",
     "material": "minecraft:iron_block",
     "result": "solonion:lunchbox"

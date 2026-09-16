@@ -65,7 +65,8 @@ public abstract class UIElement {
         if (tooltip == null)
             return;
         
-        graphics.tooltip(mc.font, List.of(ClientTooltipComponent.create(Component.literal(tooltip).getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+        graphics.tooltip(mc.font, List.of(ClientTooltipComponent.create(Component.literal(tooltip).getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null,
+            false);
     }
     
     /** Renders a tooltip at the given position.
@@ -82,7 +83,7 @@ public abstract class UIElement {
         assert mc.gui.screen() != null;
         
         graphics.tooltip(mc.font, tooltip.stream().map(x -> ClientTooltipComponent.create(x.getVisualOrderText())).collect(Collectors.toList()), mouseX, mouseY,
-            DefaultTooltipPositioner.INSTANCE, null);
+            DefaultTooltipPositioner.INSTANCE, null, false);
     }
     
     /** calculates and sets the frame to the smallest rectangle enclosing all children's frames */

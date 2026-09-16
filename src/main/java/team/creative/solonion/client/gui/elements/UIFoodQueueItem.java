@@ -28,7 +28,7 @@ public class UIFoodQueueItem extends UIItemStack {
         List<Component> tooltip = getFoodQueueTooltip();
         
         graphics.tooltip(mc.font, tooltip.stream().map(x -> ClientTooltipComponent.create(x.getVisualOrderText())).collect(Collectors.toList()), mouseX, mouseY,
-            DefaultTooltipPositioner.INSTANCE, null);
+            DefaultTooltipPositioner.INSTANCE, null, false);
     }
     
     private List<Component> getFoodQueueTooltip() {

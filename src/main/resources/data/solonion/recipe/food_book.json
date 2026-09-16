@@ -1,6 +1,6 @@
 {
     "type": "minecraft:crafting_shapeless",
-    "category": "food",
+    "group": "food",
     "ingredients": [
         "minecraft:book",
         "minecraft:potato"

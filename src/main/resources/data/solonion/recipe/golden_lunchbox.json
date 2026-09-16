@@ -1,6 +1,6 @@
 {
     "type": "minecraft:crafting_transmute",
-    "category": "equipment",
+    "group": "equipment",
     "input": "solonion:lunchbox",
     "material": "minecraft:gold_block",
     "result": "solonion:golden_lunchbox"

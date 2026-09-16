@@ -1,6 +1,6 @@
 {
     "type": "minecraft:crafting_shaped",
-    "category": "food",
+    "group": "food",
     "pattern": [
         " A ",
         "A A",

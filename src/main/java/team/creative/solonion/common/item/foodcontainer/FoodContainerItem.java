@@ -11,6 +11,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -263,7 +264,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
                 Player playerEntity = (Player) entity;
                 
                 if (!playerEntity.getInventory().add(result))
-                    playerEntity.drop(result, false);
+                    playerEntity.drop(result, false, Prediction.PREDICTED);
                 
             }
             
