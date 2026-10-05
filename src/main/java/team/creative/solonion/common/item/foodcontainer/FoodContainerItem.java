@@ -25,6 +25,7 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -58,7 +59,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
             var content = getInventory(stack);
             SimpleContainer container = new SimpleContainer(item.nslots);
             for (int i = 0; i < content.getSlots(); i++)
-                container.setItem(i, content.getStackInSlot(i));
+                container.setItem(i, content.getTemplateInSlot(i).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY));
             return container;
         }
         return null;
@@ -70,7 +71,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
             return true;
         
         for (int i = 0; i < handler.getSlots(); i++) {
-            ItemStack stack = handler.getStackInSlot(i);
+            ItemStack stack = handler.getTemplateInSlot(i).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
             if (isFoodItem(player, stack))
                 return false;
         }
@@ -88,7 +89,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         double maxDiversity = -Double.MAX_VALUE;
         int bestFoodSlot = -1;
         for (int i = 0; i < handler.getSlots(); i++) {
-            ItemStack food = handler.getStackInSlot(i);
+            ItemStack food = handler.getTemplateInSlot(i).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
             
             if (!isFoodItem(player, food))
                 continue;
@@ -234,7 +235,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         int bestFoodSlot = getBestFoodSlot(handler, player);
         if (bestFoodSlot < 0)
             return ItemStack.EMPTY;
-        return handler.getStackInSlot(bestFoodSlot).copy();
+        return handler.getTemplateInSlot(bestFoodSlot).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
     }
     
     @Override
@@ -253,7 +254,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         
         NonNullList<ItemStack> newInventory = NonNullList.withSize(handler.getSlots(), ItemStack.EMPTY);
         handler.copyInto(newInventory);
-        ItemStack bestFood = handler.getStackInSlot(bestFoodSlot);
+        ItemStack bestFood = handler.getTemplateInSlot(bestFoodSlot).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
         ItemStack foodCopy = bestFood.copy();
         if (isFoodItem(player, bestFood)) {
             ItemStack result = bestFood.finishUsingItem(world, entity);
@@ -286,7 +287,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         int bestFoodSlot = getBestFoodSlot(handler, (Player) entity);
         if (bestFoodSlot < 0)
             return 32;
-        return handler.getStackInSlot(bestFoodSlot).getUseDuration(entity);
+        return handler.getTemplateInSlot(bestFoodSlot).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY).getUseDuration(entity);
     }
     
     @Override

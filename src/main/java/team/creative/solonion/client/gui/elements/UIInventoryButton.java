@@ -15,8 +15,8 @@ public class UIInventoryButton extends Button.Plain {
     private final AbstractContainerScreen screen;
     
     public UIInventoryButton(AbstractContainerScreen screen) {
-        super(screen.getGuiLeft() + SOLOnion.CONFIG.buttonInventoryX, screen
-                .getGuiTop() + SOLOnion.CONFIG.buttonInventoryY, SOLOnion.CONFIG.buttonInventoryWidth, SOLOnion.CONFIG.buttonInventoryHeight, Component.translatable(
+        super(screen.getLeftPos() + SOLOnion.CONFIG.buttonInventoryX, screen
+                .getTopPos() + SOLOnion.CONFIG.buttonInventoryY, SOLOnion.CONFIG.buttonInventoryWidth, SOLOnion.CONFIG.buttonInventoryHeight, Component.translatable(
                     "gui.solonion.inventory.button"), (button) -> Minecraft.getInstance().gui.setScreen(new FoodBookScreen(Minecraft.getInstance().player)), DEFAULT_NARRATION);
         setTooltip(Tooltip.create(Component.translatable("gui.solonion.inventory.tooltip", TooltipUtils.print(SOLOnionAPI.getFoodCapability(Minecraft.getInstance().player)
                 .foodDiversity(Minecraft.getInstance().player)))));
@@ -24,7 +24,7 @@ public class UIInventoryButton extends Button.Plain {
     }
     
     public void updateButtonPosition() {
-        setX(screen.getGuiLeft() + SOLOnion.CONFIG.buttonInventoryX);
-        setY(screen.getGuiTop() + SOLOnion.CONFIG.buttonInventoryY);
+        setX(screen.getLeftPos() + SOLOnion.CONFIG.buttonInventoryX);
+        setY(screen.getTopPos() + SOLOnion.CONFIG.buttonInventoryY);
     }
 }

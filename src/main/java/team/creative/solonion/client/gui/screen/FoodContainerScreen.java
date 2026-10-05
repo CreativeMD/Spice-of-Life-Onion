@@ -54,13 +54,13 @@ public class FoodContainerScreen extends AbstractContainerScreen<FoodContainer> 
     }
     
     protected void drawBackground(GuiGraphicsExtractor graphics, Identifier gui) {
-        int relX = (this.width - this.getXSize()) / 2;
-        int relY = (this.height - this.getYSize()) / 2;
-        graphics.blit(RenderPipelines.GUI_TEXTURED, gui, relX, relY, 0, 0, this.getXSize(), this.getYSize(), 256, 256);
+        int relX = (this.width - this.getImageWidth()) / 2;
+        int relY = (this.height - this.getImageHeight()) / 2;
+        graphics.blit(RenderPipelines.GUI_TEXTURED, gui, relX, relY, 0, 0, this.getImageWidth(), this.getImageHeight(), 256, 256);
     }
     
     protected void drawSlot(GuiGraphicsExtractor graphics, int x, int y, Identifier texture, int size) {
-        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, this.getGuiLeft() + x, this.getGuiTop() + y, 0, 0, size, size, size, size);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, this.getLeftPos() + x, this.getTopPos() + y, 0, 0, size, size, size, size);
     }
     
     protected void drawSlot(GuiGraphicsExtractor graphics, int x, int y) {
