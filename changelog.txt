@@ -1,3 +1,6 @@
+1.5.6
+Updated to NeoForge 26.3.0.48-beta
+
 1.5.5
 Added bundle like functionality for food containers. Items can be inserted or extracted in inventory (suggested by @ZakoFish)
 
