@@ -1,3 +1,8 @@
+1.5.7
+Fixed upgrade recipe not showing up in recipe book and jei
+Fixed shouldExcludedCount caused all items to be ignored when disabled
+Fixed diversity command not returning diversity value
+
 1.5.6
 Adapted changes from CreativeCore v2.13.32
 
