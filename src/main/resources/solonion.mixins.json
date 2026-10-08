@@ -1,8 +1,7 @@
 {
 	"required": true,
 	"package": "team.creative.solonion.mixin",
-	"compatibilityLevel": "JAVA_17",
-	"refmap": "solonion.mixin.refmap.json",
+	"compatibilityLevel": "JAVA_21",
 	"server": [
 	],
 	"mixins": [

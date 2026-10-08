@@ -54,7 +54,7 @@ public final class FoodListCommand {
         double diversity = SOLOnionAPI.getFoodCapability(target).foodDiversity(target);
         MutableComponent feedback = localizedComponent("diversity_feedback", diversity);
         sendFeedback(context.getSource(), feedback);
-        return Command.SINGLE_SUCCESS;
+        return (int) diversity;
     }
     
     public static int syncFoodList(CommandContext<CommandSourceStack> context, Player target) {
