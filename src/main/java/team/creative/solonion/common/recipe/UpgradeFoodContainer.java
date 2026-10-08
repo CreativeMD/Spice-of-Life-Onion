@@ -78,11 +78,6 @@ public class UpgradeFoodContainer implements CraftingRecipe {
     }
     
     @Override
-    public boolean isSpecial() {
-        return true;
-    }
-    
-    @Override
     public boolean canCraftInDimensions(int width, int height) {
         return width > 1 || height > 1;
     }
