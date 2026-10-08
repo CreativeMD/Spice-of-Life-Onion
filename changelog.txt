@@ -1,3 +1,8 @@
+1.5.7
+Fixed refmap warning
+Fixed shouldExcludedCount caused all items to be ignored when disabled
+Fixed diversity command not returning diversity value
+
 1.5.6
 Updated to NeoForge 26.3.0.48-beta
 
