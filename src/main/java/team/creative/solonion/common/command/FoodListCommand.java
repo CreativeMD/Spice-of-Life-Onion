@@ -35,8 +35,8 @@ public final class FoodListCommand {
     
     public static ArgumentBuilder<CommandSourceStack, ?> withPlayerArgumentOrSender(ArgumentBuilder<CommandSourceStack, ?> base, CommandWithPlayer command) {
         String target = "target";
-        return base.executes((context) -> command.run(context, context.getSource().getPlayerOrException())).then(argument(target, EntityArgument.player()).executes(
-            (context) -> command.run(context, EntityArgument.getPlayer(context, target))));
+        return base.executes((context) -> command.run(context, context.getSource().getPlayerOrException())).then(argument(target, EntityArgument.player()).executes((
+                context) -> command.run(context, EntityArgument.getPlayer(context, target))));
     }
     
     public static ArgumentBuilder<CommandSourceStack, ?> withNoArgument(ArgumentBuilder<CommandSourceStack, ?> base, CommandWithoutArgs command) {
@@ -54,7 +54,7 @@ public final class FoodListCommand {
         double diversity = SOLOnionAPI.getFoodCapability(target).foodDiversity(target);
         MutableComponent feedback = localizedComponent("diversity_feedback", diversity);
         sendFeedback(context.getSource(), feedback);
-        return Command.SINGLE_SUCCESS;
+        return (int) diversity;
     }
     
     public static int syncFoodList(CommandContext<CommandSourceStack> context, Player target) {
