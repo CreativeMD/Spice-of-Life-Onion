@@ -31,12 +31,15 @@ import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+
+// TODO: ARIA
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.util.inventory.InventoryUtils;
 import team.creative.creativecore.common.util.type.list.TupleList;
 import team.creative.solonion.api.FoodPlayerData;
@@ -46,7 +49,6 @@ import team.creative.solonion.common.SOLOnion;
 import team.creative.solonion.common.mod.OriginsManager;
 
 public class FoodContainerItem extends Item implements OnionFoodContainer {
-    
     public static void setContainer(ItemStack stack, Container container) {
         List<ItemStack> stacks = new ArrayList<>(container.getContainerSize());
         for (int i = 0; i < container.getContainerSize(); i++)
@@ -147,12 +149,12 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
     
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        var handler = Capabilities.Item.BLOCK.getCapability(context.getLevel(), context.getClickedPos(), null, null, context.getClickedFace());
+        var handler = context.getLevel().getCapability(Capabilities.Item.BLOCK, context.getClickedPos(), null, null, context.getClickedFace());
         if (handler == null)
             return super.useOn(context);
-        
+
         ResourceHandler<ItemResource> inv = context.getItemInHand().getCapability(Capabilities.Item.ITEM, ItemAccess.forStack(context.getItemInHand()));
-        TupleList<Double, Integer> bestStacks = new TupleList<Double, Integer>();
+        TupleList<Double, Integer> bestStacks = new TupleList<>();
         for (int i = 0; i < handler.size(); i++) {
             ItemResource resource = handler.getResource(i);
             if (!resource.isEmpty() && resource.get(DataComponents.FOOD) != null && OriginsManager.isEdible(context.getPlayer(), resource.toStack(handler.getAmountAsInt(i)))) {
@@ -163,7 +165,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
                     if (resource.is(toBeStacked.getItem()) && resource.getComponents().equals(toBeStacked.getComponents())) {
                         int maxStackSize = Math.min(resource.getMaxStackSize(), inv.getCapacityAsInt(j, toBeStacked));
                         if (!toBeStacked.isEmpty() && inv.getAmountAsInt(j) < maxStackSize) {
-                            try (var tx = Transaction.open(null)) {
+                            try (var tx = Transaction.openRoot()) {
                                 inv.insert(j, toBeStacked, handler.extract(i, resource, maxStackSize - inv.getAmountAsInt(j), tx), tx);
                                 tx.commit();
                             }
@@ -181,7 +183,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         bestStacks.sort(Comparator.comparingDouble(x -> x.key));
         
         for (int slot : bestStacks.values()) {
-            try (var tx = Transaction.open(null)) {
+            try (var tx = Transaction.openRoot()) {
                 var resource = handler.getResource(slot);
                 var stack = handler.extract(slot, resource, handler.getAmountAsInt(slot), tx);
                 stack -= inv.insert(resource, stack, tx);
@@ -272,7 +274,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
             stack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(newInventory));
             
             if (!world.isClientSide())
-                EventHooks.onItemUseFinish(player, foodCopy, 0, result);
+                CreativeCore.loader().publishItemUsed(player, foodCopy);
         }
         
         return stack;

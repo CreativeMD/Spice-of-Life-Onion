@@ -6,8 +6,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap.Entry;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -22,7 +26,6 @@ import team.creative.solonion.api.FoodPlayerData;
 import team.creative.solonion.common.SOLOnion;
 
 public final class FoodPlayerDataImpl implements FoodPlayerData {
-    
     private static double calculateDiversity(Iterable<ItemStack> stacks, LivingEntity entity) {
         Object2DoubleArrayMap<Item> types = new Object2DoubleArrayMap<>();
         int i = 0;
@@ -81,7 +84,42 @@ public final class FoodPlayerDataImpl implements FoodPlayerData {
     private void updateDiversity(LivingEntity entity) {
         diversityCache = calculateDiversity(this, entity);
     }
-    
+
+    public static final MapCodec<FoodPlayerDataImpl> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ItemStack.CODEC.listOf().optionalFieldOf("eaten", List.of()).forGetter(x -> new ObjectArrayList<>(x.iterator())))
+            .apply(instance, FoodPlayerDataImpl::new));
+    public static final Codec<FoodPlayerDataImpl> CODEC = MAP_CODEC.codec();
+
+    public static FoodPlayerDataImpl copy(FoodPlayerData other) {
+        var result = new FoodPlayerDataImpl();
+        int index = 0;
+        for (ItemStack itemStack : other) {
+            result.lastEaten[index] = itemStack.copy();
+            if (index >= result.lastEaten.length)
+                break;
+            index++;
+        }
+
+        for (int i = index; i < result.lastEaten.length; i++)
+            result.lastEaten[i] = null;
+        result.startIndex = 0;
+        return result;
+    }
+
+    private FoodPlayerDataImpl(Iterable<ItemStack> list) {
+        int index = 0;
+		for (ItemStack itemStack : list) {
+			lastEaten[index] = itemStack;
+			if (index >= lastEaten.length)
+				break;
+			index++;
+		}
+
+        for (int i = index; i < lastEaten.length; i++)
+            lastEaten[i] = null;
+        startIndex = 0;
+	}
+
     @Override
     public void serialize(ValueOutput output) {
         var list = output.list("eaten", ItemStack.CODEC);
@@ -95,12 +133,12 @@ public final class FoodPlayerDataImpl implements FoodPlayerData {
         var list = input.listOrEmpty("eaten", ItemStack.CODEC);
         
         int index = 0;
-        for (Iterator<ItemStack> iterator = list.iterator(); iterator.hasNext();) {
-            lastEaten[index] = iterator.next();
-            if (index >= lastEaten.length)
-                break;
-            index++;
-        }
+		for (ItemStack itemStack : list) {
+			lastEaten[index] = itemStack;
+			if (index >= lastEaten.length)
+				break;
+			index++;
+		}
         
         for (int i = index; i < lastEaten.length; i++)
             lastEaten[i] = null;

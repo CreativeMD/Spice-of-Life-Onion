@@ -1,10 +1,6 @@
 package team.creative.solonion.common.benefit;
 
-import java.util.HashMap;
-import java.util.function.Function;
-
-import javax.annotation.Nullable;
-
+import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -19,12 +15,17 @@ import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.solonion.common.benefit.BenefitAttribute.BenefitTypeAttribute;
 import team.creative.solonion.common.benefit.BenefitMobEffect.BenefitTypeMobEffect;
 
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.function.Function;
+
 public abstract class BenefitType<T extends Benefit, L, A> {
     
     private static final NamedHandlerRegistry<BenefitType> REGISTRY = new NamedHandlerRegistry<>(null);
     private static final HashMap<Class, String> IDS = new HashMap<>();
     private static final HashMap<Class, BenefitType> TYPE_MAP = new HashMap<>();
-    
+
+    public static final Codec<BenefitType> CODEC = Codec.stringResolver(BenefitType::getId, REGISTRY::get);
     public static <R extends Benefit> void register(String id, Class<R> clazz, BenefitType<R, ?, ?> type) {
         REGISTRY.register(id, type);
         IDS.put(clazz, id);
@@ -92,7 +93,9 @@ public abstract class BenefitType<T extends Benefit, L, A> {
     public abstract boolean isEmpty(L stack);
     
     public abstract A createApplied();
-    
+
+    public abstract Codec<A> dataCodec();
+
     /** @param player
      * @param applied
      * @param stack

@@ -1,11 +1,7 @@
 package team.creative.solonion.common.benefit;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.function.Function;
-
-import javax.annotation.Nullable;
-
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.minecraft.core.Holder;
@@ -29,6 +25,14 @@ import team.creative.creativecore.common.gui.control.simple.GuiStateButton;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.solonion.common.SOLOnion;
 import team.creative.solonion.common.mod.FirstAidManager;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
 
 public class BenefitAttribute extends Benefit<Attribute> {
     
@@ -70,7 +74,7 @@ public class BenefitAttribute extends Benefit<Attribute> {
         return false;
     }
     
-    public static class BenefitTypeAttribute extends BenefitType<BenefitAttribute, Object2DoubleMap<AttributeHolder>, HashMap<AttributeHolder, AttributeModifier>> {
+    public static class BenefitTypeAttribute extends BenefitType<BenefitAttribute, Object2DoubleMap<AttributeHolder>, Map<AttributeHolder, AttributeModifier>> {
         
         public BenefitTypeAttribute(Function<CompoundTag, BenefitAttribute> factory) {
             super(factory);
@@ -118,17 +122,36 @@ public class BenefitAttribute extends Benefit<Attribute> {
         }
         
         @Override
-        public HashMap<AttributeHolder, AttributeModifier> createApplied() {
+        public Map<AttributeHolder, AttributeModifier> createApplied() {
             return new HashMap<>();
         }
-        
+
+        public static final Codec<Map<AttributeHolder, AttributeModifier>> CODEC = AttributeEntry.CODEC.listOf().xmap(list -> {
+            Map<AttributeHolder, AttributeModifier> map = new HashMap<>();
+            for(var entry : list) {
+                map.put(entry.attributeholder, entry.modifier);
+            }
+            return map;
+        }, map -> {
+            List<AttributeEntry> list = new ArrayList<>();
+            for(var entry : map.entrySet()) {
+                list.add(new AttributeEntry(entry.getKey(), entry.getValue()));
+            }
+            return list;
+        });
+
         @Override
-        public void clearApplied(HashMap<AttributeHolder, AttributeModifier> applied) {
+        public Codec<Map<AttributeHolder, AttributeModifier>> dataCodec() {
+            return CODEC;
+        }
+
+        @Override
+        public void clearApplied(Map<AttributeHolder, AttributeModifier> applied) {
             applied.clear();
         }
         
         @Override
-        public void saveApplied(HashMap<AttributeHolder, AttributeModifier> applied, ValueOutput output) {
+        public void saveApplied(Map<AttributeHolder, AttributeModifier> applied, ValueOutput output) {
             var list = output.childrenList(getId());
             for (Entry<AttributeHolder, AttributeModifier> entry : applied.entrySet()) {
                 var child = list.addChild();
@@ -139,18 +162,20 @@ public class BenefitAttribute extends Benefit<Attribute> {
         }
         
         @Override
-        public void loadApplied(HashMap<AttributeHolder, AttributeModifier> applied, ValueInput input) {
+        public void loadApplied(Map<AttributeHolder, AttributeModifier> applied, ValueInput input) {
             var list = input.childrenList(getId());
             if (list.isPresent())
                 list.get().forEach(child -> {
                     Reference<Attribute> att = BuiltInRegistries.ATTRIBUTE.get(Identifier.parse(child.getStringOr("att", ""))).get();
                     if (att != null)
-                        applied.put(new AttributeHolder(att, Operation.BY_ID.apply(child.getIntOr("op", 0))), child.read("mod", AttributeModifier.CODEC).orElseThrow());
+                        applied.put(
+                                new AttributeHolder(att, Operation.BY_ID.apply(child.getIntOr("op", 0))),
+                                    child.read("mod", AttributeModifier.CODEC).orElseThrow());
                 });
         }
         
         @Override
-        public boolean apply(Player player, HashMap<AttributeHolder, AttributeModifier> applied, @Nullable Object2DoubleMap<AttributeHolder> stack) {
+        public boolean apply(Player player, Map<AttributeHolder, AttributeModifier> applied, @Nullable Object2DoubleMap<AttributeHolder> stack) {
             float oldMax = player.getMaxHealth();
             
             if (!applied.isEmpty()) {
@@ -182,5 +207,23 @@ public class BenefitAttribute extends Benefit<Attribute> {
     }
     
     private static record AttributeHolder(Holder<Attribute> attribute, Operation operation) {}
-    
+    private static record AttributeEntry(AttributeHolder attributeholder, AttributeModifier modifier) {
+        public static final Codec<AttributeEntry> CODEC = RecordCodecBuilder.create(instance ->
+                                                                                instance.group(
+                                                                                        BuiltInRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("att").forGetter(AttributeEntry::attribute),
+                                                                                        Operation.CODEC.fieldOf("op").forGetter(AttributeEntry::operation),
+                                                                                        AttributeModifier.CODEC.fieldOf("mod").forGetter(AttributeEntry::modifier)
+                                                                                ).apply(instance, AttributeEntry::new));
+        public AttributeEntry(Holder<Attribute> attribute, Operation operation, AttributeModifier modifier) {
+            this(new AttributeHolder(attribute, operation), modifier);
+        }
+
+        public Holder<Attribute> attribute() {
+            return attributeholder.attribute();
+        }
+        public Operation operation() {
+            return attributeholder.operation();
+        }
+    }
+
 }
