@@ -1,17 +1,31 @@
 package team.creative.solonion.common.benefit;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import team.creative.solonion.api.BenefitPlayerData;
 
-public class BenefitPlayerDataImpl implements BenefitPlayerData {
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+public final class BenefitPlayerDataImpl implements BenefitPlayerData {
     
-    private HashMap<BenefitType, Object> applied = new HashMap<>();
-    
+    private Map<BenefitType, Object> applied;
+    private static final Codec<Map<BenefitType, Object>> INTERNAL_CODEC = Codec.dispatchedMap(BenefitType.CODEC,BenefitType::dataCodec);
+    private static final MapCodec<Map<BenefitType, Object>> INTERNAL_MAP_CODEC = MapCodec.assumeMapUnsafe(INTERNAL_CODEC);
+    public static final MapCodec<BenefitPlayerDataImpl> MAP_CODEC = INTERNAL_MAP_CODEC.xmap(BenefitPlayerDataImpl::new, x -> x.applied);
+
+    public BenefitPlayerDataImpl() {
+        this.applied = new HashMap<>();
+    }
+
+    private BenefitPlayerDataImpl(Map<BenefitType, Object> values) {
+        this.applied = new HashMap<>(values);
+    }
+
     @Override
     public void updateStack(Player player, BenefitStack benefits) {
         for (BenefitType type : BenefitType.types()) {
@@ -44,7 +58,7 @@ public class BenefitPlayerDataImpl implements BenefitPlayerData {
         
         if (input == null)
             return;
-        
+
         for (BenefitType type : BenefitType.types()) {
             var child = input.child(type.getId());
             if (child.isPresent()) {

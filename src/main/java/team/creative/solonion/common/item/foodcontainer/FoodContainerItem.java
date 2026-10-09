@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-import javax.annotation.Nullable;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
@@ -31,12 +31,9 @@ import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+
+import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.ICreativeLoader;
 import team.creative.creativecore.common.util.inventory.InventoryUtils;
 import team.creative.creativecore.common.util.type.list.TupleList;
 import team.creative.solonion.api.FoodPlayerData;
@@ -44,9 +41,9 @@ import team.creative.solonion.api.OnionFoodContainer;
 import team.creative.solonion.api.SOLOnionAPI;
 import team.creative.solonion.common.SOLOnion;
 import team.creative.solonion.common.mod.OriginsManager;
+import team.creative.solonion.mixin.ItemContainerContentsAccessor;
 
 public class FoodContainerItem extends Item implements OnionFoodContainer {
-    
     public static void setContainer(ItemStack stack, Container container) {
         List<ItemStack> stacks = new ArrayList<>(container.getContainerSize());
         for (int i = 0; i < container.getContainerSize(); i++)
@@ -58,8 +55,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         if (stack.getItem() instanceof FoodContainerItem item) {
             var content = getInventory(stack);
             SimpleContainer container = new SimpleContainer(item.nslots);
-            for (int i = 0; i < content.getSlots(); i++)
-                container.setItem(i, content.getTemplateInSlot(i).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY));
+            content.copyInto(container.getItems());
             return container;
         }
         return null;
@@ -69,13 +65,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         ItemContainerContents handler = getInventory(container);
         if (handler == null)
             return true;
-        
-        for (int i = 0; i < handler.getSlots(); i++) {
-            ItemStack stack = handler.getTemplateInSlot(i).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
-            if (isFoodItem(player, stack))
-                return false;
-        }
-        return true;
+        return handler.itemCopies().noneMatch(stack -> isFoodItem(player, stack));
     }
     
     private static void broadcastChangesOnContainerMenu(Player player) {
@@ -88,8 +78,9 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         
         double maxDiversity = -Double.MAX_VALUE;
         int bestFoodSlot = -1;
-        for (int i = 0; i < handler.getSlots(); i++) {
-            ItemStack food = handler.getTemplateInSlot(i).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
+        var items = ((ItemContainerContentsAccessor) (Object) handler).getItems();
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack food = items.get(i).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
             
             if (!isFoodItem(player, food))
                 continue;
@@ -119,8 +110,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
     public static void playInsertFailSound(Entity entity) {
         entity.playSound(SoundEvents.BUNDLE_INSERT_FAIL, 1.0F, 1.0F);
     }
-    
-    @Nullable
+
     public static ItemContainerContents getInventory(ItemStack bag) {
         if (bag.getItem() instanceof FoodContainerItem item) {
             if (bag.has(DataComponents.CONTAINER))
@@ -147,43 +137,42 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
     
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        var handler = Capabilities.Item.BLOCK.getCapability(context.getLevel(), context.getClickedPos(), null, null, context.getClickedFace());
+        var loader = CreativeCore.loader();
+        var handler = loader.getItemStorage(context.getLevel(), context.getClickedPos(), context.getClickedFace());
         if (handler == null)
             return super.useOn(context);
-        
-        ResourceHandler<ItemResource> inv = context.getItemInHand().getCapability(Capabilities.Item.ITEM, ItemAccess.forStack(context.getItemInHand()));
-        TupleList<Double, Integer> bestStacks = new TupleList<Double, Integer>();
-        for (int i = 0; i < handler.size(); i++) {
-            ItemResource resource = handler.getResource(i);
-            if (!resource.isEmpty() && resource.get(DataComponents.FOOD) != null && OriginsManager.isEdible(context.getPlayer(), resource.toStack(handler.getAmountAsInt(i)))) {
-                
-                for (int j = 0; j < inv.size(); j++) { // Fill up the slots which are already taken
-                    var toBeStacked = inv.getResource(j);
-                    
+
+        var inv = loader.getItemStorage(context.getPlayer(), context.getHand());
+        TupleList<Double, ICreativeLoader.CommonItemStorageView> bestStacks = new TupleList<>();
+        for(var viewi : handler) {
+            var resource = viewi.getResource();
+            if (!resource.isEmpty() && resource.get(DataComponents.FOOD) != null && OriginsManager.isEdible(context.getPlayer(), resource.toStack())) {
+                for (var viewj : inv) { // Fill up the slots which are already taken
+                    var toBeStacked = viewj.getResource();
                     if (resource.is(toBeStacked.getItem()) && resource.getComponents().equals(toBeStacked.getComponents())) {
-                        int maxStackSize = Math.min(resource.getMaxStackSize(), inv.getCapacityAsInt(j, toBeStacked));
-                        if (!toBeStacked.isEmpty() && inv.getAmountAsInt(j) < maxStackSize) {
-                            try (var tx = Transaction.open(null)) {
-                                inv.insert(j, toBeStacked, handler.extract(i, resource, maxStackSize - inv.getAmountAsInt(j), tx), tx);
+                        int maxStackSize = Math.min(resource.getMaxStackSize(), viewj.getCapacityAsInt());
+                        if (!toBeStacked.isEmpty() && viewj.getAmountAsInt() < maxStackSize) {
+                            try (var tx = loader.openTransaction(null)) {
+                                viewj.insert(toBeStacked, viewi.extract(resource, maxStackSize - viewj.getAmountAsInt(), tx), tx);
                                 tx.commit();
                             }
-                            
-                            if (handler.getAmountAsInt(i) <= 0)
+
+                            if (viewi.getAmountAsInt() <= 0)
                                 break;
                         }
                     }
                 }
-                
-                bestStacks.add(SOLOnion.CONFIG.getDiversity(context.getPlayer(), resource.toStack(handler.getAmountAsInt(i))), i);
+
+                bestStacks.add(SOLOnion.CONFIG.getDiversity(context.getPlayer(), resource.toStack()), viewi);
             }
         }
         
         bestStacks.sort(Comparator.comparingDouble(x -> x.key));
         
-        for (int slot : bestStacks.values()) {
-            try (var tx = Transaction.open(null)) {
-                var resource = handler.getResource(slot);
-                var stack = handler.extract(slot, resource, handler.getAmountAsInt(slot), tx);
+        for (var slot : bestStacks.values()) {
+            try (var tx = loader.openTransaction(null)) {
+                var resource = slot.getResource();
+                var stack = slot.extract(resource, slot.getAmountAsInt(), tx);
                 stack -= inv.insert(resource, stack, tx);
                 if (stack > 0) {
                     handler.insert(resource, stack, tx);
@@ -201,7 +190,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
     @Override
     public InteractionResult use(Level world, Player player, InteractionHand hand) {
         if (!world.isClientSide() && player.isCrouching())
-            player.openMenu(new FoodContainerProvider(displayName), player.blockPosition());
+            player.openMenu(new FoodContainerProvider(displayName));
         
         if (!player.isCrouching())
             return processRightClick(world, player, hand);
@@ -235,7 +224,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         int bestFoodSlot = getBestFoodSlot(handler, player);
         if (bestFoodSlot < 0)
             return ItemStack.EMPTY;
-        return handler.getTemplateInSlot(bestFoodSlot).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
+        return ((ItemContainerContentsAccessor) (Object) handler).getItems().get(bestFoodSlot).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
     }
     
     @Override
@@ -252,9 +241,9 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         if (bestFoodSlot < 0)
             return stack;
         
-        NonNullList<ItemStack> newInventory = NonNullList.withSize(handler.getSlots(), ItemStack.EMPTY);
+        NonNullList<ItemStack> newInventory = NonNullList.withSize(((ItemContainerContentsAccessor) (Object) handler).getItems().size(), ItemStack.EMPTY);
         handler.copyInto(newInventory);
-        ItemStack bestFood = handler.getTemplateInSlot(bestFoodSlot).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
+        ItemStack bestFood = ((ItemContainerContentsAccessor) (Object) handler).getItems().get(bestFoodSlot).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
         ItemStack foodCopy = bestFood.copy();
         if (isFoodItem(player, bestFood)) {
             ItemStack result = bestFood.finishUsingItem(world, entity);
@@ -272,7 +261,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
             stack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(newInventory));
             
             if (!world.isClientSide())
-                EventHooks.onItemUseFinish(player, foodCopy, 0, result);
+                CreativeCore.loader().publishItemUsed(player, foodCopy);
         }
         
         return stack;
@@ -287,7 +276,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         int bestFoodSlot = getBestFoodSlot(handler, (Player) entity);
         if (bestFoodSlot < 0)
             return 32;
-        return handler.getTemplateInSlot(bestFoodSlot).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY).getUseDuration(entity);
+        return ((ItemContainerContentsAccessor) (Object) handler).getItems().get(bestFoodSlot).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY).getUseDuration(entity);
     }
     
     @Override

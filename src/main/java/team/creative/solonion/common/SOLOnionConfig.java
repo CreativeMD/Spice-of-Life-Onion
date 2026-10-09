@@ -1,9 +1,5 @@
 package team.creative.solonion.common;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -19,7 +15,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.consume_effects.ConsumeEffect;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.api.ICreativeConfig;
@@ -33,8 +30,11 @@ import team.creative.solonion.common.benefit.BenefitMobEffect;
 import team.creative.solonion.common.benefit.BenefitThreshold;
 import team.creative.solonion.common.food.FoodProperty;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public final class SOLOnionConfig implements ICreativeConfig {
-    
     static {
         ConfigTypeConveration.registerTypeCreator(BenefitThreshold.class, () -> new BenefitThreshold(3, new BenefitAttribute(Attributes.MAX_HEALTH, 2)));
         ConfigTypeConveration.registerTypeCreator(FoodProperty.class, () -> new FoodProperty(new CreativeIngredientItem(Items.GOLDEN_CARROT), 2));
@@ -128,9 +128,9 @@ public final class SOLOnionConfig implements ICreativeConfig {
         
         if (side.isClient())
             return;
-        
-        if (ServerLifecycleHooks.getCurrentServer() != null) {
-            PlayerList players = ServerLifecycleHooks.getCurrentServer().getPlayerList();
+
+        if (CreativeCore.loader().getCurrentServer() != null) {
+            PlayerList players = CreativeCore.loader().getCurrentServer().getPlayerList();
             for (Player player : players.getPlayers()) {
                 SOLOnionAPI.getFoodCapability(player).configChanged();
                 SOLOnion.EVENT.updatePlayerBenefits(player);

@@ -1,6 +1,5 @@
 package team.creative.solonion.common.item.foodcontainer;
 
-import javax.annotation.Nonnull;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.Container;
@@ -14,13 +13,13 @@ public class FoodSlot extends Slot {
     }
     
     @Override
-    public boolean mayPlace(@Nonnull ItemStack stack) {
+    public boolean mayPlace(ItemStack stack) {
         if (!canHold(stack))
             return false;
         return super.mayPlace(stack);
     }
     
-    public static boolean canHold(@Nonnull ItemStack stack) {
+    public static boolean canHold(ItemStack stack) {
         return stack.get(DataComponents.FOOD) != null;
     }
 }

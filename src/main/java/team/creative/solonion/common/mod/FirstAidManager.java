@@ -1,9 +1,9 @@
 package team.creative.solonion.common.mod;
 
-import net.neoforged.fml.ModList;
+import team.creative.creativecore.CreativeCore;
 
 public class FirstAidManager {
     
-    public static final boolean INSTALLED = ModList.get().isLoaded("firstaid");
+    public static final boolean INSTALLED = CreativeCore.loader().isModLoaded("firstaid");
     
 }

@@ -13,8 +13,7 @@ import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
+
 import team.creative.solonion.common.item.SOLOnionItems;
 
 public class FoodContainer extends AbstractContainerMenu {
@@ -26,7 +25,7 @@ public class FoodContainer extends AbstractContainerMenu {
     private Inventory playerInventory;
     
     public FoodContainer(int id, Inventory playerInventory, Player player) {
-        super(SOLOnionItems.FOOD_CONTAINER.get(), id);
+        super(SOLOnionItems.FOOD_CONTAINER, id);
         
         // When we hit the hotkey to open a food container, check held items first
         if (player.getMainHandItem().getItem() instanceof FoodContainerItem)
@@ -41,21 +40,19 @@ public class FoodContainer extends AbstractContainerMenu {
                 }
             
         this.playerInventory = playerInventory;
-        var itemHandler = containerItem.getCapability(Capabilities.Item.ITEM, ItemAccess.forPlayerSlot(player, id));
-        SimpleContainer container = new SimpleContainer(itemHandler.size());
-        for (int i = 0; i < container.getContainerSize(); i++)
-            container.setItem(i, itemHandler.getResource(i).toStack(itemHandler.getAmountAsInt(i)));
+        var itemHandler = FoodContainerItem.getContainer(containerItem);
+        SimpleContainer container = itemHandler;
         
         if (itemHandler != null) {
-            nslots = itemHandler.size();
-            int slotsPerRow = itemHandler.size();
-            if (itemHandler.size() > 9)
-                slotsPerRow = itemHandler.size() / 2;
+            nslots = itemHandler.getContainerSize();
+            int slotsPerRow = itemHandler.getContainerSize();
+            if (itemHandler.getContainerSize() > 9)
+                slotsPerRow = itemHandler.getContainerSize() / 2;
             int xStart = (2 * 8 + 9 * 18 - slotsPerRow * 18) / 2;
             int yStart = 17 + 18;
-            if (itemHandler.size() > 9)
+            if (itemHandler.getContainerSize() > 9)
                 yStart = 17 + (84 - 36 - 23) / 2;
-            for (int j = 0; j < itemHandler.size(); j++) {
+            for (int j = 0; j < itemHandler.getContainerSize(); j++) {
                 int row = j / slotsPerRow;
                 int col = j % slotsPerRow;
                 int xPos = xStart + col * 18;
