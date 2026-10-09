@@ -26,7 +26,6 @@ import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.solonion.common.SOLOnion;
 import team.creative.solonion.common.mod.FirstAidManager;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -175,7 +174,7 @@ public class BenefitAttribute extends Benefit<Attribute> {
         }
         
         @Override
-        public boolean apply(Player player, Map<AttributeHolder, AttributeModifier> applied, @Nullable Object2DoubleMap<AttributeHolder> stack) {
+        public boolean apply(Player player, Map<AttributeHolder, AttributeModifier> applied, Object2DoubleMap<AttributeHolder> stack) {
             float oldMax = player.getMaxHealth();
             
             if (!applied.isEmpty()) {

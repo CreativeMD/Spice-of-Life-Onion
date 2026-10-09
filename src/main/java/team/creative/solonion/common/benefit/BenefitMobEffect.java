@@ -21,7 +21,6 @@ import team.creative.creativecore.common.config.premade.registry.RegistryObjectC
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.solonion.api.SOLOnionAPI;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -117,7 +116,7 @@ public class BenefitMobEffect extends Benefit<MobEffect> {
         }
         
         @Override
-        public boolean apply(Player player, AppliedMobEffects applied, @Nullable Object2IntMap<Holder<MobEffect>> stack) {
+        public boolean apply(Player player, AppliedMobEffects applied, Object2IntMap<Holder<MobEffect>> stack) {
             applied.reseting = true;
             if (!applied.isEmpty()) {
                 for (Holder<MobEffect> effect : applied)
@@ -128,7 +127,7 @@ public class BenefitMobEffect extends Benefit<MobEffect> {
             
             if (stack != null) {
                 for (var entry : stack.object2IntEntrySet()) {
-                    var in = new MobEffectInstance(entry.getKey(), MobEffectInstance.INFINITE_DURATION, entry.getIntValue(), false, false);
+                    var in = new MobEffectInstance(entry.getKey(), MobEffectInstance.INFINITE_DURATION, entry.getIntValue(), false, false, false);
                     if (player.addEffect(in))
                         applied.add(entry.getKey());
                 }
@@ -147,7 +146,7 @@ public class BenefitMobEffect extends Benefit<MobEffect> {
         }
 
         private AppliedMobEffects(List<Holder<MobEffect>> list) {
-            this.list = list;
+            this.list = new ArrayList<>(list);
         }
         
         public void clear() {

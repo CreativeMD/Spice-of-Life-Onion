@@ -14,7 +14,8 @@ import team.creative.solonion.common.item.foodcontainer.FoodContainerItem;
 import java.util.function.Supplier;
 
 public final class SOLOnionItems {
-    public static final CommonRegistry.NamespacedRegistry REGISTRY = CommonRegistry.INSTANCE.bindToNamespace(SOLOnion.MODID);
+    public static final CommonRegistry COMMON_REGISTRY = new CommonRegistry();
+    public static final CommonRegistry.NamespacedRegistry REGISTRY = COMMON_REGISTRY.bindToNamespace(SOLOnion.MODID);
     public static final BoundRegistry.Items ITEMS = REGISTRY.createItems();
 
     public static final Supplier<Item> BOOK = ITEMS.registerItem("food_book", FoodBookItem::new);

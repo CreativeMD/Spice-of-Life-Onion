@@ -1,7 +1,6 @@
 package team.creative.solonion.common;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -17,9 +16,7 @@ import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.consume_effects.ConsumeEffect;
 import net.minecraft.world.level.Level;
 
-// TODO: ARIA
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
-
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.api.ICreativeConfig;
@@ -132,8 +129,8 @@ public final class SOLOnionConfig implements ICreativeConfig {
         if (side.isClient())
             return;
 
-        if (ServerLifecycleHooks.getCurrentServer() != null) {
-            PlayerList players = ServerLifecycleHooks.getCurrentServer().getPlayerList();
+        if (CreativeCore.loader().getCurrentServer() != null) {
+            PlayerList players = CreativeCore.loader().getCurrentServer().getPlayerList();
             for (Player player : players.getPlayers()) {
                 SOLOnionAPI.getFoodCapability(player).configChanged();
                 SOLOnion.EVENT.updatePlayerBenefits(player);

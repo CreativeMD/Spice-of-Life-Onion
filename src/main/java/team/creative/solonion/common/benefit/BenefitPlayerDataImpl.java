@@ -17,14 +17,13 @@ public final class BenefitPlayerDataImpl implements BenefitPlayerData {
     private static final Codec<Map<BenefitType, Object>> INTERNAL_CODEC = Codec.dispatchedMap(BenefitType.CODEC,BenefitType::dataCodec);
     private static final MapCodec<Map<BenefitType, Object>> INTERNAL_MAP_CODEC = MapCodec.assumeMapUnsafe(INTERNAL_CODEC);
     public static final MapCodec<BenefitPlayerDataImpl> MAP_CODEC = INTERNAL_MAP_CODEC.xmap(BenefitPlayerDataImpl::new, x -> x.applied);
-    public static final Codec<BenefitPlayerDataImpl> CODEC = INTERNAL_CODEC.xmap(BenefitPlayerDataImpl::new, x -> x.applied);
 
     public BenefitPlayerDataImpl() {
         this.applied = new HashMap<>();
     }
 
     private BenefitPlayerDataImpl(Map<BenefitType, Object> values) {
-        this.applied = new HashMap<>();
+        this.applied = new HashMap<>(values);
     }
 
     @Override

@@ -15,7 +15,6 @@ import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.solonion.common.benefit.BenefitAttribute.BenefitTypeAttribute;
 import team.creative.solonion.common.benefit.BenefitMobEffect.BenefitTypeMobEffect;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.function.Function;
 
@@ -100,7 +99,7 @@ public abstract class BenefitType<T extends Benefit, L, A> {
      * @param applied
      * @param stack
      * @return whether applied is empty after the process and can be removed */
-    public abstract boolean apply(Player player, A applied, @Nullable L stack);
+    public abstract boolean apply(Player player, A applied, L stack);
     
     public abstract void clearApplied(A applied);
     

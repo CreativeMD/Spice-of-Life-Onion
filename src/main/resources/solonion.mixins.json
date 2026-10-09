@@ -5,10 +5,12 @@
 	"server": [
 	],
 	"mixins": [
-		"CakeBlockMixin"
+		"CakeBlockMixin",
+		"ItemContainerContentsAccessor"
 	],
 	"client": [
-		"AbstractRecipeBookScreenMixin"
+		"AbstractRecipeBookScreenMixin",
+		"ScreenAccessor"
 	],
 	"minVersion": "0.8"
 }

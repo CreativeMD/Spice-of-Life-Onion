@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -32,7 +30,6 @@ public abstract class UIElement {
     protected static final Minecraft mc = Minecraft.getInstance();
     
     public Rectangle frame;
-    @Nullable
     public String tooltip;
     protected final List<UIElement> children = new ArrayList<>();
     
@@ -65,8 +62,7 @@ public abstract class UIElement {
         if (tooltip == null)
             return;
         
-        graphics.tooltip(mc.font, List.of(ClientTooltipComponent.create(Component.literal(tooltip).getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null,
-            false);
+        graphics.tooltip(mc.font, List.of(ClientTooltipComponent.create(Component.literal(tooltip).getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null, false);
     }
     
     /** Renders a tooltip at the given position.
