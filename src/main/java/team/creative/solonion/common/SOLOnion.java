@@ -51,9 +51,10 @@ public final class SOLOnion implements CommonLoader, ClientLoader {
         SOLOnionItems.init();
         loader.register(this);
         loader.registerClient(this);
-        if (loader.forge()) {
+        if (loader.forge())
             loader.register(SOLOnionItems.COMMON_REGISTRY);
-        }
+        if (loader.getOverallSide().isClient())
+            SOLOnionClient.loadEarly();
     }
     
     @Override
@@ -67,9 +68,8 @@ public final class SOLOnion implements CommonLoader, ClientLoader {
     @Override
     public void onInitialize() {
         var loader = CreativeCore.loader();
-        if (loader.fabric()) {
+        if (loader.fabric())
             loader.register(SOLOnionItems.COMMON_REGISTRY);
-        }
         loader.registerItemStorage((ItemStack itemStack) -> {
             List<ItemStack> list = new ArrayList<>(FoodContainerItem.getInventory(itemStack).itemCopies().toList());
             int size = ((FoodContainerItem) itemStack.getItem()).nslots;

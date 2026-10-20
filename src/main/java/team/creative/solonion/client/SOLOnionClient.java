@@ -32,13 +32,22 @@ public class SOLOnionClient {
     public static final KeyMapping.Category SOL_CATEGORY = CreativeCoreClient.loader().registerCategory(Identifier.fromNamespaceAndPath(SOLOnion.MODID, "category"));
     public static final KeyMapping OPEN_FOOD_BOOK = new KeyMapping("key.solonion.open_food_book", InputConstants.UNKNOWN.getValue(), SOL_CATEGORY);
     
+    private static boolean LOADED_EARLY = false;
+    
+    public static void loadEarly() {
+        if (LOADED_EARLY)
+            return;
+        var clientLoader = CreativeCoreClient.loader();
+        clientLoader.registerMenu(SOLOnionItems.FOOD_CONTAINER, FoodContainerScreen::new);
+        clientLoader.registerKeybind(OPEN_FOOD_BOOK);
+        clientLoader.addScreenWidget(screen -> screen instanceof InventoryScreen s && SOLOnion.CONFIG.showButtonInInventory ? s : null, UIInventoryButton::new);
+        LOADED_EARLY = true;
+    }
+    
     public static void load(ICreativeLoader loader) {
         var clientLoader = CreativeCoreClient.loader();
         loader.registerClientTick(SOLOnionClient::handleKeypress);
-        clientLoader.registerMenu(SOLOnionItems.FOOD_CONTAINER, FoodContainerScreen::new);
-        clientLoader.registerKeybind(OPEN_FOOD_BOOK);
         clientLoader.registerModifyTooltip(SOLOnionClient::onItemTooltip);
-        clientLoader.addScreenWidget(screen -> screen instanceof InventoryScreen s && SOLOnion.CONFIG.showButtonInInventory ? s : null, UIInventoryButton::new);
     }
     
     public static void handleKeypress() {
