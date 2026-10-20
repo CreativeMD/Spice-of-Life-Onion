@@ -1,3 +1,7 @@
+1.6.0
+Added support for Fabric (by FreezePhoenix)
+Adapted to CreativeCore v2.14.22
+
 1.5.7
 Fixed refmap warning
 Fixed shouldExcludedCount caused all items to be ignored when disabled

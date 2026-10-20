@@ -1,7 +1,7 @@
 {
     "schemaVersion": 1,
     "id": "solonion",
-    "version": "1.5.7",
+    "version": "1.6.0",
     "name": "Spice of Life Onion",
     "description": "A mod designed to encourage dietary variety by rewarding the player with customizable benefits depending on how diverse their diet is.",
     "authors": [
@@ -29,7 +29,7 @@
         "solonion.mixins.json"
     ],
     "depends": {
-        "creativecore": ">=2.14.21",
+        "creativecore": ">=2.14.22",
         "fabricloader": ">=0.19.5",
         "fabric-api": "*",
         "minecraft": ">=26.3"

@@ -5,12 +5,12 @@ license="LGPL-3.0-only"
 
 [[mods]]
     modId="solonion"
-    iconFile="solonion.png"
-    version="1.5.7"
+    version="1.6.0"
     displayName="Spice of Life Onion"
     displayURL="https://modrinth.com/mod/spice-of-life-onion"
     authors="tarinoita, CreativeMD"
     description='''A mod designed to encourage dietary variety by rewarding the player with customizable benefits depending on how diverse their diet is.'''
+    iconFile="solonion.png"
 
 [[dependencies.solonion]]
     modId="neoforge"
@@ -31,7 +31,7 @@ license="LGPL-3.0-only"
    type="required"
    ordering="NONE"
    side="BOTH"
-   versionRange="[2.14.21,)"
+   versionRange="[2.14.22,)"
 
 [[mixins]]
    config="solonion.mixins.json"
