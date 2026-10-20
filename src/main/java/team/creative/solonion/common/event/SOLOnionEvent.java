@@ -56,24 +56,24 @@ public class SOLOnionEvent {
         
         SOLOnionAPI.getBenefitCapability(player).updateStack(player, stack);
     }
-
+    
     public void onPlayerLogin(Player player) {
         updatePlayerBenefits(player);
         syncFoodList(player);
     }
-
+    
     public void onPlayerDimensionChange(Player player, ResourceKey<Level> fromDim, ResourceKey<Level> toDim) {
         syncFoodList(player);
     }
-
+    
     public void onClone(Player originalPlayer, Player newPlayer, boolean wasDeath) {
         if (wasDeath && SOLOnion.CONFIG.resetOnDeath)
             return;
-
+        
         var provider = newPlayer.registryAccess();
         var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
         var input = TagValueInput.create(ProblemReporter.DISCARDING, provider, output.buildResult());
-
+        
         SOLOnionAPI.FOOD_DATA.set(newPlayer, FoodPlayerDataImpl.copy(SOLOnionAPI.getFoodCapability(originalPlayer)));
         
         BenefitPlayerDataImpl benefit = new BenefitPlayerDataImpl();
@@ -81,10 +81,10 @@ public class SOLOnionEvent {
         SOLOnionAPI.getBenefitCapability(originalPlayer).serialize(output);
         input = TagValueInput.create(ProblemReporter.DISCARDING, provider, output.buildResult());
         benefit.deserialize(input);
-
+        
         SOLOnionAPI.BENEFIT_DATA.set(newPlayer, benefit);
     }
-
+    
     public void onPlayerRespawn(Player player) {
         updatePlayerBenefits(player);
         syncFoodList(player);
@@ -96,15 +96,15 @@ public class SOLOnionEvent {
         
         SOLOnion.NETWORK.sendToClient(new FoodListMessage(player.registryAccess(), SOLOnionAPI.getFoodCapability(player)), (ServerPlayer) player);
     }
-
+    
     public void onFoodEaten(LivingEntity entity, ItemStack usedItem) {
         if (!(entity instanceof Player player))
             return;
-
+        
         if (!SOLOnion.isActive(player))
             return;
-
-		if (usedItem.get(DataComponents.FOOD) == null && usedItem.getItem() != Items.CAKE)
+        
+        if (usedItem.get(DataComponents.FOOD) == null && usedItem.getItem() != Items.CAKE)
             return;
         if (usedItem.getItem() instanceof FoodContainerItem)
             return;

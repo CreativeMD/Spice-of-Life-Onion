@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
-
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
@@ -31,7 +29,6 @@ import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.ICreativeLoader;
 import team.creative.creativecore.common.util.inventory.InventoryUtils;
@@ -110,7 +107,7 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
     public static void playInsertFailSound(Entity entity) {
         entity.playSound(SoundEvents.BUNDLE_INSERT_FAIL, 1.0F, 1.0F);
     }
-
+    
     public static ItemContainerContents getInventory(ItemStack bag) {
         if (bag.getItem() instanceof FoodContainerItem item) {
             if (bag.has(DataComponents.CONTAINER))
@@ -141,10 +138,10 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
         var handler = loader.getItemStorage(context.getLevel(), context.getClickedPos(), context.getClickedFace());
         if (handler == null)
             return super.useOn(context);
-
+        
         var inv = loader.getItemStorage(context.getPlayer(), context.getHand());
         TupleList<Double, ICreativeLoader.CommonItemStorageView> bestStacks = new TupleList<>();
-        for(var viewi : handler) {
+        for (var viewi : handler) {
             var resource = viewi.getResource();
             if (!resource.isEmpty() && resource.get(DataComponents.FOOD) != null && OriginsManager.isEdible(context.getPlayer(), resource.toStack())) {
                 for (var viewj : inv) { // Fill up the slots which are already taken
@@ -156,13 +153,13 @@ public class FoodContainerItem extends Item implements OnionFoodContainer {
                                 viewj.insert(toBeStacked, viewi.extract(resource, maxStackSize - viewj.getAmountAsInt(), tx), tx);
                                 tx.commit();
                             }
-
+                            
                             if (viewi.getAmountAsInt() <= 0)
                                 break;
                         }
                     }
                 }
-
+                
                 bestStacks.add(SOLOnion.CONFIG.getDiversity(context.getPlayer(), resource.toStack()), viewi);
             }
         }

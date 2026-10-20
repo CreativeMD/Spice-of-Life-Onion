@@ -13,8 +13,10 @@ public final class SOLOnionAPI {
     public static final Identifier BENEFIT = Identifier.fromNamespaceAndPath(SOLOnion.MODID, "benefit");
     public static final Identifier FOODCONTAINER = Identifier.fromNamespaceAndPath(SOLOnion.MODID, "food_container");
     
-    public static final ICreativeAttachmentType<FoodPlayerDataImpl> FOOD_DATA = CreativeCore.loader().registerAttachment(FOOD, FoodPlayerDataImpl::new, FoodPlayerDataImpl.MAP_CODEC);
-    public static final ICreativeAttachmentType<BenefitPlayerDataImpl> BENEFIT_DATA = CreativeCore.loader().registerAttachment(BENEFIT, BenefitPlayerDataImpl::new, BenefitPlayerDataImpl.MAP_CODEC);
+    public static final ICreativeAttachmentType<FoodPlayerDataImpl> FOOD_DATA = CreativeCore.loader().registerAttachment(FOOD, FoodPlayerDataImpl::new,
+        FoodPlayerDataImpl.MAP_CODEC);
+    public static final ICreativeAttachmentType<BenefitPlayerDataImpl> BENEFIT_DATA = CreativeCore.loader().registerAttachment(BENEFIT, BenefitPlayerDataImpl::new,
+        BenefitPlayerDataImpl.MAP_CODEC);
     
     public static FoodPlayerData getFoodCapability(Player player) {
         return FOOD_DATA.get(player);
@@ -27,11 +29,11 @@ public final class SOLOnionAPI {
     public static void syncFoodList(Player player) {
         SOLOnion.EVENT.syncFoodList(player);
     }
-
+    
     public static void init() {
         // Class load
     }
-
+    
     private SOLOnionAPI() {}
     
 }

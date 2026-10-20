@@ -1,9 +1,14 @@
 package team.creative.solonion.common.command;
 
+import static net.minecraft.commands.Commands.argument;
+
+import java.util.Objects;
+
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -14,10 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.CreativeCore;
 import team.creative.solonion.api.SOLOnionAPI;
 import team.creative.solonion.common.SOLOnion;
-
-import java.util.Objects;
-
-import static net.minecraft.commands.Commands.argument;
 
 public final class FoodListCommand {
     

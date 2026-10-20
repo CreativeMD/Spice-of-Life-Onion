@@ -7,11 +7,11 @@ import team.creative.solonion.common.benefit.BenefitStack;
 import team.creative.solonion.common.benefit.BenefitType;
 
 public interface BenefitPlayerData {
-
+    
     public void serialize(ValueOutput output);
-
+    
     public void deserialize(ValueInput input);
-
+    
     public void updateStack(Player player, BenefitStack benefits);
     
     public <T> T getApplied(BenefitType<?, ?, T> type);

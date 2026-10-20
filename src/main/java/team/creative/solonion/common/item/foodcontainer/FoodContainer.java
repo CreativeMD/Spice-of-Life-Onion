@@ -13,7 +13,6 @@ import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-
 import team.creative.solonion.common.item.SOLOnionItems;
 
 public class FoodContainer extends AbstractContainerMenu {

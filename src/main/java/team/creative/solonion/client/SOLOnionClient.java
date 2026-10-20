@@ -1,6 +1,9 @@
 package team.creative.solonion.client;
 
+import java.util.List;
+
 import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -23,8 +26,6 @@ import team.creative.solonion.client.gui.screen.FoodBookScreen;
 import team.creative.solonion.client.gui.screen.FoodContainerScreen;
 import team.creative.solonion.common.SOLOnion;
 import team.creative.solonion.common.item.SOLOnionItems;
-
-import java.util.List;
 
 public class SOLOnionClient {
     
@@ -57,7 +58,7 @@ public class SOLOnionClient {
         Player player = Minecraft.getInstance().player;
         if (player == null)
             return;
-
+        
         if (stack.getItem() instanceof OnionFoodContainer c)
             stack = c.getActualFood(player, stack);
         

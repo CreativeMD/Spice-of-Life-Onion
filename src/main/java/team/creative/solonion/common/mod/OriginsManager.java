@@ -1,14 +1,14 @@
 package team.creative.solonion.common.mod;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.reflection.ReflectionHelper;
 import team.creative.solonion.common.SOLOnion;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public class OriginsManager {
     

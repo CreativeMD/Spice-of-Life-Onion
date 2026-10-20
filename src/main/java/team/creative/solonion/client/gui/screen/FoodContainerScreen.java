@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-
 import team.creative.solonion.common.SOLOnion;
 import team.creative.solonion.common.item.foodcontainer.FoodContainer;
 import team.creative.solonion.common.item.foodcontainer.FoodContainerItem;

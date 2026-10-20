@@ -62,7 +62,8 @@ public abstract class UIElement {
         if (tooltip == null)
             return;
         
-        graphics.tooltip(mc.font, List.of(ClientTooltipComponent.create(Component.literal(tooltip).getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null, false);
+        graphics.tooltip(mc.font, List.of(ClientTooltipComponent.create(Component.literal(tooltip).getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null,
+            false);
     }
     
     /** Renders a tooltip at the given position.

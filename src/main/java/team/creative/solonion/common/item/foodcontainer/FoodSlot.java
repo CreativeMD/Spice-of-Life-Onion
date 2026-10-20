@@ -1,6 +1,5 @@
 package team.creative.solonion.common.item.foodcontainer;
 
-
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
