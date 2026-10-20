@@ -1,13 +1,16 @@
 {
-    "required": true,
-    "package": "team.creative.solonion.mixin",
-    "compatibilityLevel": "JAVA_21",
-    "server": [
-    ],
-    "mixins": [
-    ],
-    "client": [
-        "AbstractRecipeBookScreenMixin"
-    ],
-    "minVersion": "0.8"
+	"required": true,
+	"package": "team.creative.solonion.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"server": [
+	],
+	"mixins": [
+		"CakeBlockMixin",
+		"ItemContainerContentsAccessor"
+	],
+	"client": [
+		"AbstractRecipeBookScreenMixin",
+		"ScreenAccessor"
+	],
+	"minVersion": "0.8"
 }

@@ -1,14 +1,9 @@
 package team.creative.solonion.common.command;
 
-import static net.minecraft.commands.Commands.argument;
-
-import java.util.Objects;
-
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -16,9 +11,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.fml.ModList;
+import team.creative.creativecore.CreativeCore;
 import team.creative.solonion.api.SOLOnionAPI;
 import team.creative.solonion.common.SOLOnion;
+
+import java.util.Objects;
+
+import static net.minecraft.commands.Commands.argument;
 
 public final class FoodListCommand {
     
@@ -97,7 +96,7 @@ public final class FoodListCommand {
         //Origins.cacheInvalidate(target);
         
         MutableComponent feedback;
-        if (ModList.get().isLoaded("origins")) {
+        if (CreativeCore.loader().isModLoaded("origins")) {
             feedback = localizedComponent("origin.invalidated");
         } else {
             feedback = localizedComponent("origin.inapplicable");
@@ -119,7 +118,7 @@ public final class FoodListCommand {
         //Origins.clearCache();
         
         MutableComponent feedback;
-        if (ModList.get().isLoaded("origins")) {
+        if (CreativeCore.loader().isModLoaded("origins")) {
             feedback = localizedComponent("origin.cleared");
         } else {
             feedback = localizedComponent("origin.inapplicable");

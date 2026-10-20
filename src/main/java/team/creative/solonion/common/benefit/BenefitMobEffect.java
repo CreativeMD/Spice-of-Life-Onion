@@ -1,12 +1,6 @@
 package team.creative.solonion.common.benefit;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Function;
-
-import javax.annotation.Nullable;
-
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.Holder;
@@ -16,15 +10,21 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.premade.registry.RegistryObjectConfig;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.solonion.api.SOLOnionAPI;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Function;
 
 public class BenefitMobEffect extends Benefit<MobEffect> {
     
@@ -39,20 +39,20 @@ public class BenefitMobEffect extends Benefit<MobEffect> {
     public BenefitMobEffect(CompoundTag nbt) {
         super(BuiltInRegistries.MOB_EFFECT, nbt);
     }
-    
+
     public static class BenefitTypeMobEffect extends BenefitType<BenefitMobEffect, Object2IntMap<Holder<MobEffect>>, AppliedMobEffects> {
         
         public BenefitTypeMobEffect(Function<CompoundTag, BenefitMobEffect> factory) {
             super(factory);
-            NeoForge.EVENT_BUS.addListener(this::onEffectRemove);
+            CreativeCore.loader().registerRemoveEffectCallback(this::onEffectRemove);
         }
         
-        public void onEffectRemove(MobEffectEvent.Remove event) {
-            if (event.getEntity() instanceof Player player) {
+        public boolean onEffectRemove(MobEffectInstance effectInstance, LivingEntity entity) {
+            if (entity instanceof Player player) {
                 var applied = SOLOnionAPI.getBenefitCapability(player).getApplied(this);
-                if (applied != null && !applied.reseting && applied.contains(event.getEffect()))
-                    event.setCanceled(true);
+				return applied != null && !applied.reseting && applied.contains(effectInstance.getEffect());
             }
+            return false;
         }
         
         @Override
@@ -90,7 +90,12 @@ public class BenefitMobEffect extends Benefit<MobEffect> {
         public AppliedMobEffects createApplied() {
             return new AppliedMobEffects();
         }
-        
+
+        @Override
+        public Codec<AppliedMobEffects> dataCodec() {
+            return AppliedMobEffects.CODEC;
+        }
+
         @Override
         public void clearApplied(AppliedMobEffects applied) {
             applied.clear();
@@ -111,7 +116,7 @@ public class BenefitMobEffect extends Benefit<MobEffect> {
         }
         
         @Override
-        public boolean apply(Player player, AppliedMobEffects applied, @Nullable Object2IntMap<Holder<MobEffect>> stack) {
+        public boolean apply(Player player, AppliedMobEffects applied, Object2IntMap<Holder<MobEffect>> stack) {
             applied.reseting = true;
             if (!applied.isEmpty()) {
                 for (Holder<MobEffect> effect : applied)
@@ -122,7 +127,7 @@ public class BenefitMobEffect extends Benefit<MobEffect> {
             
             if (stack != null) {
                 for (var entry : stack.object2IntEntrySet()) {
-                    var in = new MobEffectInstance(entry.getKey(), -1, entry.getIntValue(), false, false);
+                    var in = new MobEffectInstance(entry.getKey(), MobEffectInstance.INFINITE_DURATION, entry.getIntValue(), false, false, false);
                     if (player.addEffect(in))
                         applied.add(entry.getKey());
                 }
@@ -131,10 +136,18 @@ public class BenefitMobEffect extends Benefit<MobEffect> {
         }
     }
     
-    private static class AppliedMobEffects implements Iterable<Holder<MobEffect>> {
-        
-        private List<Holder<MobEffect>> list = new ArrayList<>();
+    public static class AppliedMobEffects implements Iterable<Holder<MobEffect>> {
+        public static final Codec<AppliedMobEffects> CODEC = BuiltInRegistries.MOB_EFFECT.holderByNameCodec().listOf().xmap( AppliedMobEffects::new, x -> x.list);
+        private final List<Holder<MobEffect>> list;
         boolean reseting;
+
+        public AppliedMobEffects() {
+            this.list = new ArrayList<>();
+        }
+
+        private AppliedMobEffects(List<Holder<MobEffect>> list) {
+            this.list = new ArrayList<>(list);
+        }
         
         public void clear() {
             list.clear();
